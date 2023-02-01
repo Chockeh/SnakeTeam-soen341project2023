@@ -12,15 +12,15 @@ This web application is a career services platform where students can create por
  
 Kevin Fernandez (27768370)
 * Github: Chockeh
-* Team Role: Team Leader, Scrum Master
+* Team Roles: Team Leader, Scrum Master, Tester
 
 Aimée Nduwumwe (40086156) 
 * Github: ey-meh
-* Team Role: Front-end Developer
+* Team Roles: Front-end Developer
 
 Sisahga Phimmasone (40210015) 
 * Github: MacMee 
-* Front-end Developer, Back-end Developer
+* Team Roles: Front-end Developer, Back-end Developer
 
 Nour Hassoun (40233077)
 
@@ -28,5 +28,5 @@ Nour Hassoun (40233077)
 
 * HTML
 * CSS
-* Bootstrap
+* Bootstrap 5
 * Node.js
