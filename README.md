@@ -1,8 +1,12 @@
 # SOEN 341
 
+## Objective
+
 ## Description
 
 This web application is a career services platform where students can create portfolios and apply for jobs. Employers will be able to review job applications that students submit, and schedule an interview for suitable applicants.
+
+## Core Features
 
 ## Team Members
  
