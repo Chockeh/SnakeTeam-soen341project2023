@@ -1,6 +1,7 @@
 # SOEN 341
 
 ## Objective
+The main objective of this project is to create a career services platform that resembles Compass/LinkedIn/Indeed.
 
 ## Description
 
