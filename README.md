@@ -28,6 +28,8 @@ Azal Al-Mashta (40179492)
 * Team Roles: Back-end Developer
 
 Nour Hassoun (40233077)
+* Github: iluvpesto
+* Team Roles: Front-end Developper, Back-end Developer
 
 ## Technologies
 
