@@ -9,6 +9,11 @@ This web application is a career services platform where students can create por
 
 ## Core Features
 
+* Students can create portfolios and apply for jobs.
+* Employers can create and manage job postings.
+* Admins can manage all profiles and job postings.
+* Guide will curate job postings and aid students.
+
 ## Team Members
  
 Kevin Fernandez (27768370)
