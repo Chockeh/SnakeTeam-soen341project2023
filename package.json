@@ -1,0 +1,24 @@
+{
+  "name": "code",
+  "version": "1.0.0",
+  "description": "SOEN 341 Web App Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chockeh/SnakeTeam-soen341project2023.git"
+  },
+  "author": "Sisahga Phimmasone",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chockeh/SnakeTeam-soen341project2023/issues"
+  },
+  "homepage": "https://github.com/Chockeh/SnakeTeam-soen341project2023#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "https": "^1.0.0"
+  }
+}
