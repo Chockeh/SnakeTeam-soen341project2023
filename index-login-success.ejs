@@ -1,0 +1,122 @@
+<!doctype html>
+
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Snakepit</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <!-- CSS Styles Sheets -->
+    <link rel="stylesheet" href="global-styles.css">
+    <link rel="stylesheet" href="styles.css">
+
+  </head>
+
+  <body>
+
+    <div class="alert alert-success alert-dismissible fade show" id="login-success-message" role="alert">
+        <strong><em><%= loginSuccessMsg %></em></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+
+        <div class="container-fluid">
+
+            <a href="/" class="brand-link">JobPit</a>
+            <hr style="height: 1rem; color:white">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav nav-main-items">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Student Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Student Talent</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Experienced Workers</a>
+                    </li>
+                    <form action="/login">
+                        <li class="nav-item collapsed-item">
+                            <a href="/login" class="nav-link">Log In</a>
+                        </li>
+                    </form>
+                    <form action="/signup" method="GET">
+                        <li class="nav-item collapsed-item">
+                            <a href="/signup" class="nav-link">Sign Up</a>
+                        </li>
+                    </form>
+                </ul>
+                <% if(isLoggedIn){ %>
+                    <ul class="navbar-nav justify-content-right nav-forms user-profile-nav">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-success dropdown-toggle inner-nav-form user-profile-button" data-bs-toggle="dropdown"><%= username %></button>
+                            <ul class="dropdown-menu user-dropdown">
+                              <li><a class="dropdown-item" href="/profile">My Profile <i class="fa-regular fa-user"></i></a></li>
+                              <li><a class="dropdown-item" href="/signout">Sign Out <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
+                            </ul>
+                          </div>
+                    </ul>            
+                <% } else{ %>
+                    <ul class="navbar-nav justify-content-right nav-forms">
+                        <li class="nav-item">
+                            <form action="/login" method="get">
+                                <button type="submit" class="btn btn-light inner-nav-form">Log In</button>
+                            </form>
+                        </li>
+                        <li class="nav-item">
+                            <form action="/signup" method="get">
+                                <button type="submit" class="btn btn-primary">Sign Up</button>
+                            </form>
+                        </li>
+                    </ul>
+                <% } %>
+            </div>
+
+        </div>
+    </nav>
+
+    <section id="title-section">
+        <div class="container-fluid title-container">
+            <h1 class="welcome-text">Welcome to SnakePit's JobPit. <br> Where, Graduating Students find jobs. <br> Where, Employers hire fresh talent.</h1>
+            <% if(!isLoggedIn){ %>
+                <form action="/signup" method="GET">
+                    <button type="submit" class="btn btn-primary btn-lg btn-title-section">Sign up now!</button>
+                </form>
+                <p class="log-in-alt"> <i> Already have an account?</i></p>
+                <form action="/login" method="GET">
+                    <button class="btn btn-md btn-light" type="submit">Log in</button>
+                </form>
+            <% } else{ %>
+                <form action="/" method="GET">
+                    <button type="submit" class="btn btn-primary btn-lg btn-title-section">Find Jobs</button>
+                </form>
+            <% } %>
+        </div>
+    </section>
+
+    <!-- Bootstrap, jQuery & Font-Awesome Scripts -->
+    <script src="/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/7b145b1c64.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+  </body>
+
+</html>
