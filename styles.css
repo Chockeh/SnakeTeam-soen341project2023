@@ -1,4 +1,9 @@
+
+
+
 /* Body Styles */
+
+
 body {
     margin: 0;
     padding: 0;
@@ -11,7 +16,10 @@ body {
 }
 
 
+
 /* Navbar Styles */
+
+
 .navbar {
     background-color: var(--black);
     border-bottom: 0.5rem solid var(--light-blue);
@@ -128,7 +136,11 @@ ul.dropdown-menu.user-dropdown.show  {
     }
 }
 
+
+
 /* Title Section Styles */
+
+
 .title-container {
     color: white;
     position: relative;
@@ -168,7 +180,11 @@ ul.dropdown-menu.user-dropdown.show  {
     }
 }
 
+
+
 /* Sign up page Styles */
+
+
 .signup-body {
     display: flex;
     align-items: center;
@@ -245,7 +261,11 @@ ul.dropdown-menu.user-dropdown.show  {
     bottom: 0;
 }
 
+
+
 /* Profile Page Styles */
+
+
 #profile-section {
     text-align: center;
     margin-left: auto;
@@ -286,10 +306,13 @@ ul.dropdown-menu.user-dropdown.show  {
 }
 
 
+
 /* Job-Post Page Styles */
+
+
 .job-post-container {
     width: 60%;
-    margin-top: 3rem;
+    margin-top: 2.5rem;
     margin-left: auto;
     margin-right: auto;
 }
@@ -322,7 +345,7 @@ ul.dropdown-menu.user-dropdown.show  {
 }
 
 #floatingTextArea {
-    height: 16rem;
+    height: 12rem;
     padding-top: 2.5rem;
     font-size: 0.85rem;
 }
@@ -347,4 +370,42 @@ ul.dropdown-menu.user-dropdown.show  {
     border-radius: 0 0 2rem 0;
     width: 33.333333%;
     height: 3rem;
+}
+
+
+
+/* Student Jobs Styles */
+
+
+.floating-jobs {
+    position: relative;
+    text-align: left;
+
+    color: black;
+    width: 70%;
+    
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3rem;
+
+}
+
+.floating-job {
+    padding: 2rem 2rem 4rem 2rem;
+    background-color: var(--light-blue);
+    border-radius: 1rem;
+    position: relative;
+}
+
+.apply-btn {
+    position: absolute;
+    right: 1rem;
+}
+
+.floating-job {
+    margin-bottom: 3rem;
+}
+
+.job-section {
+    font-weight: bolder;
 }

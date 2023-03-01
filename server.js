@@ -2,6 +2,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const _ = require("lodash");
+const { times } = require("lodash");
 
 const app = express();
 
@@ -9,6 +11,9 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
+
+
+// VARIABLES
 
 var loggedIn = false;
 var signUpMessageOn = false;
@@ -20,8 +25,24 @@ var userFullName = "";
 var userEmail = "";
 var accountType = "";
 
+var jobs = [];
+var job;
+var kebabCaseJobTitles = [];
+
+var jobRouteName = "";
+
+var truncatedJobDescription = [];
+
+
+
+function sleep (time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+
+
 // Connecting to MongoDB
-mongoose.connect("mongodb://localhost:27017/users");
+mongoose.connect("mongodb+srv://sisahga:Jb_50055007$@cluster1.jukr83b.mongodb.net/?retryWrites=true&w=majority");
 
 
 // -- MONGOOSE SCHEMAS --
@@ -71,11 +92,32 @@ const User = mongoose.model("User", userSchema);
 const Job = mongoose.model("Job", jobSchema);
 
 
+Job.find({}, function(err, allJobs) {
+    jobs = [];
+    if (err)
+    {
+        console.log("No jobs available.");
+    }
+    else
+    {
+        allJobs.forEach(function(job){
+            jobs.push(job);
+            kebabCaseJobTitles.push(_.kebabCase(job.company + " " + job.jobTitle));
+        });
+    }
+});
+
+
 // -- GET --
 
 app.get("/", function(req, res)
 {
-    res.render("index", {isLoggedIn : loggedIn, username : userName});
+    res.render("index", 
+        {
+            isLoggedIn : loggedIn, 
+            username : userName
+        }
+    );
 });
 
 app.get("/index", function(req, res)
@@ -95,18 +137,38 @@ app.get("/login", function(req, res)
 
 app.get("/signup-err", function(req, res)
 {
-    res.render("signup-err", {alertMessage : signupErrMessage});
+    res.render("signup-err", 
+        {
+            alertMessage : signupErrMessage
+        }
+    );
 });
 
 app.get("/login-success", function(req,res)
 {
-    res.render("index-login-success", {loginSuccessMsg : loginSuccessMessage, isLoggedIn : loggedIn, username : userName});
+    res.render("index-login-success", 
+        {
+            loginSuccessMsg : loginSuccessMessage, 
+            isLoggedIn : loggedIn, 
+            username : userName
+        }
+    );
 });
 
 app.get("/profile", function(req, res)
 {
     console.log(accountType);
-    res.render("profile", {isLoggedIn : loggedIn, username : userName, fullName : userFullName, accType : accountType, userFirstName : userName, userLastName : userLastName,  userEmail : userEmail});
+    res.render("profile", 
+        {
+            isLoggedIn : loggedIn, 
+            username : userName,
+            fullName : userFullName,
+            accType : accountType,
+            userFirstName : userName, 
+            userLastName : userLastName,  
+            userEmail : userEmail
+        }
+    );
 });
 
 app.get("/signout", function(req, res)
@@ -123,11 +185,60 @@ app.get("/signout", function(req, res)
     res.redirect("/");
 });
 
-app.get("/post-job", function(req, res){
-    res.render("post-job", {isLoggedIn : loggedIn, username : userName});
+app.get("/post-job", function(req, res)
+{
+    res.render("post-job", 
+        {
+            isLoggedIn : loggedIn, 
+            username : userName
+        }
+    );
 });
 
+app.get("/student-jobs", function(req, res)
+{
+    console.log(jobs);
 
+    sleep(250).then(() => {
+        res.render("student-jobs", 
+        {
+            isLoggedIn : loggedIn, 
+            username: userName, 
+            jobs : jobs,
+            kebabTitles: kebabCaseJobTitles
+        }
+    );
+    });
+});
+  
+app.get("/student-jobs/:jobID", function(req, res)
+{
+    Job.findById(req.params.jobID, function(err, foundJob)
+    {
+        console.log(foundJob);
+        if (err)
+        {
+            console.log("There is an error.");
+            console.log(err);
+        }
+        else
+        {
+            job = foundJob;
+            console.log("Found matching job.");
+        }
+    });
+
+    console.log(job);
+
+    sleep(250).then(() => {
+        res.render("job", 
+        {
+            isLoggedIn: loggedIn,
+            username: userName,
+            job: job
+        });
+    });
+})
 
 
 // -- POST --
@@ -141,7 +252,8 @@ app.post("/signup", function(req, res)
     console.log(req.body.email);
     console.log(req.body.password);
 
-    User.findOne({email: req.body.email}, function(err, userObj){
+    User.findOne({email: req.body.email}, function(err, userObj)
+    {
 
         //Stores the user profile in the database if the email the user entered does not already exist in the database.
         if (err || userObj === null)
@@ -291,15 +403,20 @@ app.post("/login", function(req, res)
 
 });
 
-app.post("/job-post-success", function(req, res){
+app.post("/job-post-success", function(req, res)
+{
 
-    Job.create({
+    job = Job.create({
         jobTitle: req.body.title,
         company: req.body.company,
         jobDescription: req.body.description,
         requirements: req.body.requirements,
         assets: req.body.assets
     });
+
+    jobs.push(job);
+
+    res.redirect("/profile");
 }); 
 
 app.listen(3000, function()
