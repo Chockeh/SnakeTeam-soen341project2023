@@ -3,7 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const _ = require("lodash");
-const { times } = require("lodash");
+const { find } = require("lodash");
 
 const app = express();
 
@@ -11,6 +11,15 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
+
+
+// Connecting to MongoDB
+main().then(console.log("Successfully connected to MongoDB Atlas.")).catch((err) => console.log(err));
+async function main()
+{
+    mongoose.set("strictQuery", true);
+    await mongoose.connect("mongodb+srv://sisahga:Jb_50055007$@cluster1.jukr83b.mongodb.net/?retryWrites=true&w=majority");
+}
 
 
 // VARIABLES
@@ -24,8 +33,10 @@ var userLastName = "";
 var userFullName = "";
 var userEmail = "";
 var accountType = "";
+var accountID = "";
 
 var jobs = [];
+var employerJobs = [];
 var job;
 var kebabCaseJobTitles = [];
 
@@ -40,14 +51,10 @@ function sleep (time) {
 }
 
 
-
-// Connecting to MongoDB
-mongoose.connect("mongodb+srv://sisahga:Jb_50055007$@cluster1.jukr83b.mongodb.net/?retryWrites=true&w=majority");
-
-
 // -- MONGOOSE SCHEMAS --
 
-const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema(
+{
     accountType: {
         type: String,
         required: [true, "Please select the type for your account."]
@@ -74,7 +81,10 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-const jobSchema = new mongoose.Schema({
+const User = mongoose.model("User", userSchema);
+
+const jobSchema = new mongoose.Schema(
+{
     jobTitle: {
         type: String,
         required: [true, "Please enter a job title."]
@@ -85,27 +95,11 @@ const jobSchema = new mongoose.Schema({
     },
     jobDescription: String,
     requirements: String,
-    assets: String
+    assets: String,
+    authorID: String
 });
 
-const User = mongoose.model("User", userSchema);
 const Job = mongoose.model("Job", jobSchema);
-
-
-Job.find({}, function(err, allJobs) {
-    jobs = [];
-    if (err)
-    {
-        console.log("No jobs available.");
-    }
-    else
-    {
-        allJobs.forEach(function(job){
-            jobs.push(job);
-            kebabCaseJobTitles.push(_.kebabCase(job.company + " " + job.jobTitle));
-        });
-    }
-});
 
 
 // -- GET --
@@ -113,11 +107,10 @@ Job.find({}, function(err, allJobs) {
 app.get("/", function(req, res)
 {
     res.render("index", 
-        {
-            isLoggedIn : loggedIn, 
-            username : userName
-        }
-    );
+    {
+        isLoggedIn : loggedIn, 
+        username : userName
+    });
 });
 
 app.get("/index", function(req, res)
@@ -197,6 +190,21 @@ app.get("/post-job", function(req, res)
 
 app.get("/student-jobs", function(req, res)
 {
+    Job.find({}, async function(err, allJobs) {
+        jobs = [];
+        if (err)
+        {
+            console.log("No jobs available.");
+        }
+        else
+        {
+            await allJobs.forEach(function(job){
+                jobs.push(job);
+                kebabCaseJobTitles.push(_.kebabCase(job.company + " " + job.jobTitle));
+            });
+        }
+    });
+
     console.log(jobs);
 
     sleep(250).then(() => {
@@ -213,7 +221,8 @@ app.get("/student-jobs", function(req, res)
   
 app.get("/student-jobs/:jobID", function(req, res)
 {
-    Job.findById(req.params.jobID, function(err, foundJob)
+    
+    Job.findById(req.params.jobID, async function(err, foundJob)
     {
         console.log(foundJob);
         if (err)
@@ -230,7 +239,8 @@ app.get("/student-jobs/:jobID", function(req, res)
 
     console.log(job);
 
-    sleep(250).then(() => {
+
+    sleep(250).then(()=> {
         res.render("job", 
         {
             isLoggedIn: loggedIn,
@@ -239,6 +249,45 @@ app.get("/student-jobs/:jobID", function(req, res)
         });
     });
 })
+
+app.get("/myjobs", async function(req, res)
+{
+    async function findAccountJobs()
+    {
+        Job.find({}, async function(err, allJobs) {
+            employerJobs = [];
+            if (err)
+            {
+                console.log("Employer hasn't created any jobs yet.");
+            }
+            else
+            {
+                await allJobs.forEach(function(job)
+                {
+                    if (job.authorID == accountID)
+                    {
+                        employerJobs.push(job);
+                        kebabCaseJobTitles.push(_.kebabCase(job.company + " " + job.jobTitle));
+                    }
+                });
+            }
+        });
+
+        return employerJobs;
+    }
+
+    await findAccountJobs();
+
+    sleep(250).then(() => 
+    {
+        res.render("employer-jobs", 
+        {
+            isLoggedIn : loggedIn, 
+            username : userName,
+            employerJobs : employerJobs
+        })
+    })
+}); 
 
 
 // -- POST --
@@ -356,62 +405,64 @@ app.post("/signup-err", function(req, res)
     });
 });
 
-app.post("/login", function(req, res)
+app.post("/login", async function(req, res)
 {
 
     console.log(req.body.email);
     console.log(req.body.password);
 
-    User.findOne({email: req.body.email}, function(err, userObj){
+    try
+    {
+        let foundUser = await User.findOne({email: req.body.email});
 
-        if (err || userObj === null)
+        console.log(foundUser.password);
+    
+        if (req.body.password === foundUser.password)
         {
-            console.log("The email address you entered did not match any of our user records.");
+            console.log("Password correct!");
+    
+            accountType = foundUser.accountType;
+            accountType = accountType.toUpperCase() + " Account";
+    
+            userName = foundUser.firstName;
+            userLastName = foundUser.lastName;
+            userFullName = foundUser.firstName + " " + foundUser.lastName;
+            userEmail = foundUser.email;
+            accountID = foundUser.id;
+    
+            loginSuccessMessage = "Welcome back, " + userName + "!";
+    
+            loggedIn = true;
+            signUpMessageOn = true;
+    
+            console.log(loggedIn);
+            res.redirect("/login-success");
         }
-
         else
         {
-            if (req.body.password === userObj.password)
-            {
-                console.log("Password correct!");
-
-                accountType = userObj.accountType;
-                accountType = accountType.toUpperCase() + " Account";
-
-                userName = userObj.firstName;
-                userLastName = userObj.lastName;
-                userFullName = userObj.firstName + " " + userObj.lastName;
-                userEmail = userObj.email;
-
-                loginSuccessMessage = "Welcome back, " + userName + "!";
-
-                loggedIn = true;
-                signUpMessageOn = true;
-
-                console.log(loggedIn);
-                res.redirect("/login-success");
-            }
-            else
-            {
-                signUpMessageOn = false;
-                loggedIn = false;
-                console.log("The password you entered is incorrect.");
-            }
+            signUpMessageOn = false;
+            loggedIn = false;
+            console.log("The password you entered is incorrect.");
         }
+    }
 
-    })
+    catch (err)
+    {
+        console.log(err);
+    }
 
 });
 
-app.post("/job-post-success", function(req, res)
+app.post("/job-post-success", async function(req, res)
 {
 
-    job = Job.create({
+    job = await Job.create({
         jobTitle: req.body.title,
         company: req.body.company,
         jobDescription: req.body.description,
         requirements: req.body.requirements,
-        assets: req.body.assets
+        assets: req.body.assets,
+        authorID: accountID
     });
 
     jobs.push(job);
