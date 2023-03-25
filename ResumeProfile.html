@@ -1,0 +1,35 @@
+<form id="profile-form">
+  <label>Name:</label>
+  <input type="text" name="name" required>
+
+  <label>Email:</label>
+  <input type="email" name="email" required>
+  <br>
+<br>
+  <label>Profile Picture:</label>
+  <input type="file" name="picture" accept="image/*" required>
+<br>
+<br>
+  <label>Resume:</label>
+  <input type="file" name="resume" accept=".pdf,.doc,.docx" required>
+<br>
+<br>
+  <button type="submit">Submit</button>
+</form>
+
+<script>
+  const form = document.getElementById('profile-form');
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(form);
+    const response = await fetch('/profile', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const json = await response.json();
+    console.log(json);
+  });
+</script>
