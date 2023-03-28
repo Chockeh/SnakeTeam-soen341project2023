@@ -28,10 +28,6 @@ Sisahga Phimmasone (40210015)
 * Github: MacMee 
 * Team Roles: Front-end Developer, Back-end Developer
 
-Azal Al-Mashta (40179492)
-* Github: Royaleagle04
-* Team Roles: Back-end Developer
-
 Nour Hassoun (40233077)
 * Github: iluvpesto
 * Team Roles: Front-end Developper, Back-end Developer
