@@ -1,5 +1,5 @@
 
-
+ 
 /* Body Styles */
 
 
@@ -18,8 +18,8 @@ body {
 /* Navbar Styles */
 
 
+
 .navbar {
-    position: relative;
     background-color: var(--black);
     border-bottom: 0.5rem solid var(--light-blue);
 }
@@ -61,12 +61,19 @@ body {
 
 .user-profile-button {
     width: 7rem;
+    box-shadow: 1px 1px 1px 1px green;
 }
 
 ul.dropdown-menu.user-dropdown.show  {
     --bs-dropdown-min-width: 0;
-    left: 0;
-    text-align: center;
+    position: absolute;
+
+    min-width: 12rem;
+    left: -7.25rem;
+    
+    text-align: right;
+    box-shadow: 2px 2px 1px 1px;
+
 }
 
 .navbar-toggler {
@@ -83,6 +90,11 @@ ul.dropdown-menu.user-dropdown.show  {
 
 .inner-nav-form {
     margin-right: 0.5rem;
+}
+
+.nav-forms .btn 
+{
+    border-radius: 0.25rem !important;
 }
 
 
@@ -173,7 +185,7 @@ ul.dropdown-menu.user-dropdown.show  {
 }
 
 .welcome-text {
-    font-size: 2.75rem;
+    font-size: 2.25rem;
     line-height: 2;
 }
 
@@ -188,6 +200,11 @@ ul.dropdown-menu.user-dropdown.show  {
 
 .btn-title-section {
     margin-top: 2rem;
+    border-radius: 0.25rem !important;
+}
+
+.btn-login-home {
+    border-radius: 0.25rem;
 }
 
 .btn-sm {
@@ -201,6 +218,13 @@ ul.dropdown-menu.user-dropdown.show  {
 @media screen and (max-width : 991px) {
     .welcome-text {
         font-size: 2rem;
+    }
+}
+
+@media screen and (max-width : 688px)
+{
+    .welcome-text {
+        font-size: 1.5rem;
     }
 }
 
@@ -273,6 +297,7 @@ ul.dropdown-menu.user-dropdown.show  {
 
 .copyright {
     margin-top: 2rem;
+    margin-bottom: 0.5rem;
     color: white;
 }
 
@@ -285,6 +310,20 @@ ul.dropdown-menu.user-dropdown.show  {
     bottom: 0;
 }
 
+.no-account-container {
+    color: white;
+    position: relative;
+    top: 2rem;
+    font-size: 0.85rem;
+}
+
+.ask-sign-up {
+    margin-bottom: 0.5rem;
+}
+
+.login-btn, .signup-btn {
+    border-radius: 0.25rem;
+}
 
 
 /* Profile Page Styles */
@@ -292,28 +331,43 @@ ul.dropdown-menu.user-dropdown.show  {
 
 @media screen and (max-width: 991px) {
     #profile-section {
-        width: 80%;
-        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         text-align: center;
+
         margin-left: auto;
         margin-right: auto;
         margin-top: 3rem;
-        background-color: white;
-        border-radius: 2rem;
+
+        width: 80%;
+        height: calc(100% - 84px - 6rem);
+
+        background-color: var(--black);
     }    
 }
 @media screen and (min-width: 992px) {
     #profile-section {
-        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         text-align: center;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 3rem;
+
+        margin: 3rem auto;
+
         width: 60%;
-        background-color: white;
-        border-radius: 2rem;
+        height: calc(100% - 84px - 6rem);
+
+        background-color: var(--black);
     }
     
+}
+
+.profile-container {
+    background-color: var(--light-blue);
+    height: 70%;
+    min-height: 550px;
+    border-radius: 0.25rem;
 }
 
 .user-account-type {
@@ -328,6 +382,7 @@ ul.dropdown-menu.user-dropdown.show  {
     text-align: left;
     margin-left: 3rem;
     margin-top: 3rem;
+    margin-bottom: 3rem;
 }
 
 .account-details-title {
@@ -336,22 +391,58 @@ ul.dropdown-menu.user-dropdown.show  {
 
 .profile-forms {
     position: relative;
-    margin-top: 3rem;
-    text-align: left;
     margin-left: 3rem;
-    padding-bottom: 3rem;
+    bottom: 0;
+    padding-top: 4rem;
 }
-
-.account-specific-buttons {  
+.account-specific-buttons {
     display: flex;
 }
 
-.signout-button {
-    margin-top: 2rem;
+#profile-form {
+    margin-right: 0.5rem !important;
+}
+
+#profile-button {
+    border-radius: 0.25rem;
+    width: fit-content;
+}
+
+.profile-signout-form {
+    position: absolute;
+    right: 2rem;
+}
+
+.view-jobs-button {
+    position: relative;
+    width: 100%;
+    left: 0;
 }
 
 .cv-button {
     border-radius: 2rem;
+}
+
+@media screen and (max-width : 720px) {
+    .profile-signout-form {
+        bottom: 0.5rem;
+        right: 1rem;
+    }
+    .account-specific-buttons {
+        position: relative;
+        text-align: left;
+
+    }
+    .cv-button {
+        position: relative;
+        bottom: 0.5rem;
+    }
+    .post-job-button {
+        margin-bottom: 0.5rem;
+    }
+    .account-details, .profile-forms {
+        margin-left: 1.5rem;
+    }
 }
 
 
@@ -372,9 +463,41 @@ ul.dropdown-menu.user-dropdown.show  {
     .job-post-form-buttons .btn {
         font-size: 12px;
     }
+    .floating-jobs {
+        position: relative;
+        text-align: left;
+    
+        color: black;
+        width: 90%;
+        
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 1rem;
+    }
+    .job-title {
+        width: 70%;
+    }
+
+    .already-applied-err {
+        position: relative;
+        width: 90%;
+        margin: 0 auto;
+    }
+
 }
 
 @media screen and (min-width: 992px) {
+    .floating-jobs {
+        position: relative;
+        text-align: left;
+    
+        color: black;
+        width: 70%;
+        
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 1rem;
+    }
     .job-post-container {
         width: 60%;
         margin-top: 2.5rem;
@@ -384,6 +507,12 @@ ul.dropdown-menu.user-dropdown.show  {
     .job-post-form-buttons {
         display: flex;
         padding-bottom: 3rem;
+    }
+
+    .already-applied-err {
+        position: relative;
+        width: 70%;
+        margin: 0 auto;
     }
 }
 
@@ -441,26 +570,16 @@ ul.dropdown-menu.user-dropdown.show  {
 
 /* Student Jobs Styles */
 
-
-.floating-jobs {
-    position: relative;
-    text-align: left;
-
-    color: black;
-    width: 70%;
-    
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 3rem;
-
-}
-
 .floating-job {
     position: relative;
-    padding: 2rem 2rem 4rem 2rem;
+    padding: 1rem 2rem 3rem 2rem;
     background-color: var(--light-blue);
-    border-radius: 1rem;
+    border-radius: 0.25rem;
     position: relative;
+}
+
+#unique-floating-job {
+    padding-top: 2rem;
 }
 
 .job-title-container {
@@ -469,27 +588,427 @@ ul.dropdown-menu.user-dropdown.show  {
 }
 
 .apply-btn {
+    position: relative;
+}
+
+.view-btn {
+    right: 1rem;
+    margin-left: 0.5rem;
+}
+
+.employer-action-buttons {
     position: absolute;
+    display: flex;
+    justify-content: right;
     right: 1rem;
 }
 
-.edit-btn {
-    position: absolute;
-    right: 2rem;
-}
-
 .floating-job {
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
+    min-width: 426px;
 }
 
 .job-section {
     font-weight: bolder;
 }
 
-.company-name {
-    text-decoration: underline 2px solid black;
-}
-
 .individual-job {
     margin-top: 6rem;
+}
+
+.job-extra {
+    font-size: 0.75rem;
+}
+
+.extra-title {
+    font-size: 0.85rem;
+    margin-bottom: 0;
+}
+
+.action-buttons {
+    position: absolute;
+    right: 1rem;
+    vertical-align: middle;
+    justify-content: right;
+    display: flex;
+}
+
+.favorite-button {
+    position: relative;
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 100%;
+    right: 0.5rem;
+}
+
+.collapsible-button {
+    position: absolute;
+    right: 2rem;
+}
+
+#collapsible-content {
+    transition: height 200ms;
+}
+
+.apply-btn-job {
+    position: absolute;
+    right: 2rem;
+    bottom: 1.5rem;
+}
+
+
+/* Apply for a job page Styles */
+
+#confirm-application {
+    width: 100vw;
+    height: calc(100% - 84px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.application-form-container {
+    background-color: var(--light-blue);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    height: 100%;
+
+    border-radius: 0.25rem;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    padding: 3rem 2rem 0 2rem
+}
+
+.application-forms {
+    display: block;
+}
+
+.apply-with-profile-btn {
+    width: 50%;
+    min-width: 200px;
+    border-radius: 0.25rem;
+    transition: all ease-in 250ms;
+    margin-top: 2rem;
+}
+.apply-with-profile-btn-2 {
+    border-radius: 0.25rem;
+    transition: all ease-in 250ms;
+}
+.apply-with-profile-btn:hover, .apply-with-profile-btn-2:hover, .finalize-application-btn:hover {
+    background: linear-gradient(to right, green 50%, #009e08 60%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    transition: all ease-in-out 400ms;
+    border-color: transparent;
+}
+.btn :hover, .btn:active, .btn-success:hover .apply-with-profile-btn:hover, .apply-with-profile-btn-2:hover, .finalize-application-btn:hover {
+    border-color: transparent !important;
+    transition: all ease-out 500ms;
+}
+
+.apply-for-job-submit-btn {
+    position: relative;
+    bottom: 0;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    top: 1rem;
+}
+
+.job-submit-btn-span {
+    position: relative;
+    top: 0;
+}
+
+.question-cover-letter {
+    font-size: 0.75rem;
+    margin-bottom: 0.2rem;
+}
+
+.select-file-btn {
+    width: 25%;
+    min-width: 120px;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+}
+
+.file-name-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: fit-content;
+    font-size: 10px;
+    background-color: var(--light-gray);
+    border-radius: 0.25rem;
+    margin: 0.25rem 0.25rem 2rem 0.25rem;
+    opacity: 50%;
+}
+.attached-cover-letter {
+    margin-bottom: 0;
+    padding: 0.5rem;
+    font-style: italic;
+}
+
+@media screen and (max-width: 991px) and (min-width: 578px) {
+    .box-window-apply {
+        width: 90%;
+        height: 80%;
+    
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    .apply-title-container {
+        font-size: 1.5rem;
+    }
+    
+}
+@media screen and (min-width: 992px) {
+    .box-window-apply {
+        width: 60%;
+        height: 80%;
+    
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    .apply-title-container {
+        font-size: 1.5rem;
+    }
+}
+@media screen and (max-width: 577px) {
+    .apply-title-container {
+        font-size: 1rem;
+    }
+    .box-window-apply {
+        width: 90%;
+        height: 80%;
+    
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    
+}
+
+.job-title-job-title, .job-title-company {
+    border-bottom: 1.5px solid black;
+}
+
+.action-profile-apply, .action-cover-letter-apply {
+    width: 80%;
+    height: auto;
+
+    padding: 5rem;
+
+    position: absolute;
+    background-color: var(--light-blue);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 0.25rem;
+}
+
+.package-list {
+    list-style-type: none;
+    padding: 2rem 0;
+}
+
+.profile-apply-title {
+    font-size: 1.5rem;
+}
+
+.exit-btn-container {
+    position: absolute;
+    right: 1rem;
+    top: 0.75rem;
+}
+.exit-btn, .exit-btn-second {
+    background-color: transparent !important;
+    border: none !important;
+}
+.exit-btn:hover, .exit-btn-second:hover {
+    font-size: 1rem;
+    transition: all ease-in 100ms;
+}
+
+.no-cover-letter-warning {
+    position: absolute;
+    bottom: 1rem;
+}
+
+.finalize-application-btn {
+    transition: all ease-in 450ms;
+}
+
+
+/* Student Applications Page Styles */
+
+#my-applications-section {
+    height: calc(100vh - 84px);
+    width: 100vw;
+}
+
+.my-applications-main-title-container, .view-applicants-main-title-container {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    margin-top: 2rem;
+}
+
+.my-applications-container {
+    width: 80%;
+    position: relative;
+    margin-top: 2rem;
+}
+
+@media screen and (max-width : 991px) {
+    .my-applications-container {
+        width: 95%;
+    }
+}
+
+.floating-application-container {
+    background-color: var(--light-blue);
+    width: 100%;
+    height: 100%;
+    color: black;
+    border-radius: 0.25rem;
+    padding: 1rem 2rem 0.1rem 2rem;
+    margin: 1rem auto;
+    position: relative;
+}
+
+.apps-main-title {
+    font-size: 2rem;
+    margin-bottom: 0 !important;
+}
+
+.my-application-title {
+    font-size: 1.25rem;
+}
+
+.floating-application-buttons {
+    position: absolute;
+    display: flex;
+    bottom: 1rem;
+    right: 2rem;
+}
+
+.all-btns {
+    border-radius: 0.25rem;
+}
+
+
+/* Employer Job Postings */
+
+.view-applicants-btn-container {
+    position: relative;
+}
+
+.view-applicants-btn {
+    position: absolute;
+    width: 100%;
+}
+
+.delete-btn {
+    margin-left: 0.5rem;
+}
+
+
+/* View Candidate Profile Styles */
+
+
+.candidate-profile-outer-container {
+    background-color: var(--light-blue);
+    width: 100%;
+    height: 150%;
+
+    padding: 5rem;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    border-radius: 0.25rem;
+    z-index: 1;
+}
+
+.candidate-action-btns {
+    display: flex;
+    justify-content: center;
+}
+
+.candidate-btn {
+    padding: 0 0.25rem;
+}
+
+.candidate-name {
+    font-size: 2rem;
+}
+
+.status-container-outer {
+    background-color: var(--lighter-blue);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.accepted-status {
+    background-color: #009e08;
+    font-size: 14px;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    color: white;
+}
+
+.rejected-status {
+    background-color: rgb(179, 11, 11);
+    font-size: 14px;
+    padding: 1rem;
+    border-radius: 0.25rem;
+}
+
+.idle-status {
+    background-color: var(--light-gray);
+    font-size: 14px;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    color: black;
+}
+
+.status-ring {
+    position: absolute;
+    right: 2rem;
+}
+
+.upload-cv-div {
+    background-color: var(--light-blue);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: absolute;
+}
+.inner-upload-cv {
+    padding: 4rem 2rem 2rem 2rem;
 }

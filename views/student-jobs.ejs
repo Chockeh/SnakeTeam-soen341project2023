@@ -19,7 +19,6 @@
     <!-- CSS Styles Sheets -->
     <link rel="stylesheet" href="/global-styles.css">
     <link rel="stylesheet" href="/styles.css">
-
   </head>
 
   <body>
@@ -63,7 +62,6 @@
                             </li>
                         </form>
                         <form action="/signup" method="GET">
-                            <li class="nav-item collapsed-item">
                                 <a href="/signup" class="nav-link">Sign Up</a>
                             </li>
                         </form>
@@ -74,7 +72,7 @@
                         <div class="dropdown">
                             <button type="button" class="btn btn-success dropdown-toggle inner-nav-form user-profile-button" data-bs-toggle="dropdown"><%= username %></button>
                             <ul class="dropdown-menu user-dropdown">
-                              <li><a class="dropdown-item" href="/profile">My Profile <i class="fa-regular fa-user"></i></a></li>
+                              <li><a class="dropdown-item" href="/profile">My <%= accType %> <i class="fa-regular fa-user"></i></a></li>
                               <li><a class="dropdown-item" href="/signout">Sign Out <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
                             </ul>
                           </div>
@@ -103,31 +101,45 @@
             <% jobs.forEach(function(job) { %>
                 <% var i = 0; %>
                 <div class="floating-job">
-                    <form action="/student-jobs/<%= job._id.toString() %>" method="GET">
-                        <button class="btn btn-lg btn-outline-primary apply-btn">View Job</button>
-                    </form>
-                    <div class="job-title-container">
-                        <h1 class="job-title"><b><%= job.jobTitle %></b></h1>    
+                    <div class="action-buttons container-fluid">
+                        <% if (accType === "STUDENT Account" || !isLoggedIn) { %>
+                            <form action="/apply/<%= job._id %>" method="GET">
+                                <button type="submit" class="btn btn-md btn-outline-success apply-btn all-btns">Apply now</button>
+                            </form>
+                        <% } %>
+                        <form action="/student-jobs/<%= job._id.toString() %>" method="GET">
+                            <button class="btn btn-md btn-outline-primary view-btn all-btns">View Posting</button>
+                        </form>
                     </div>
-                    <h2 class="company-name"><i><%= job.company %></i></h2>
-                    <br><br>
-                    <h5 class="job-section">Job Description</h5>
-                    <p class="job-description"><%= job.jobDescription %></p>
-                    <h5 class="job-section">Requirements</h5>
-                    <p class="job-requirements"><%= job.requirements %></p>
-                    <h5 class="job-section">Assets</h5>
-                    <p class="job-assets"><%= job.assets %></p>
-                    <br>
-                    <button class="btn btn-lg btn-outline-success apply-btn">Apply now</button>
+                    <div class="job-title-container">
+                        <p class="job-title"><b><%= job.jobTitle %></b></p>
+                    </div>
+                    <p class="company-name"><%= job.company %></p>
+                    <p class="job-section extra-title job-description-title">Job Description</p>
+                    <p class="job-description job-extra"><%= job.jobDescription %></p>
+
+                    <div id="collapsible-content" class="collapse open-job-content">
+                        <p class="job-section extra-title">Requirements</p>
+                        <p class="job-requirements job-extra"><%= job.requirements %></p>
+                        <p class="job-section extra-title">Assets</p>
+                        <p class="job-assets job-extra"><%= job.assets %></p>
+                        <br>
+                    </div>
+                    
+                    <button class="btn btn-sm btn-outline-secondary collapsible-button" type="button" data-bs-target="#collapsible-content" data-bs-toggle="collapse">
+                        <i class="fa-solid fa-caret-down"></i>
+                    </button>
                 </div>
                 <% i++; %>
             <% }); %>
         </div>
     </section>
 
-
 <!-- Bootstrap, jQuery & Font-Awesome Scripts -->
 <script src="/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 <script src="https://kit.fontawesome.com/7b145b1c64.js" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+</body>
+</html>

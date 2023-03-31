@@ -19,7 +19,6 @@
     <!-- CSS Styles Sheets -->
     <link rel="stylesheet" href="/global-styles.css">
     <link rel="stylesheet" href="/styles.css">
-
   </head>
 
   <body>
@@ -63,7 +62,6 @@
                             </li>
                         </form>
                         <form action="/signup" method="GET">
-                            <li class="nav-item collapsed-item">
                                 <a href="/signup" class="nav-link">Sign Up</a>
                             </li>
                         </form>
@@ -74,7 +72,7 @@
                         <div class="dropdown">
                             <button type="button" class="btn btn-success dropdown-toggle inner-nav-form user-profile-button" data-bs-toggle="dropdown"><%= username %></button>
                             <ul class="dropdown-menu user-dropdown">
-                              <li><a class="dropdown-item" href="/profile">My Profile <i class="fa-regular fa-user"></i></a></li>
+                              <li><a class="dropdown-item" href="/profile">My <%= accType %> <i class="fa-regular fa-user"></i></a></li>
                               <li><a class="dropdown-item" href="/signout">Sign Out <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
                             </ul>
                           </div>
@@ -98,28 +96,74 @@
         </div>
     </nav>
 
-    <section id="student-jobs-section">
-        <div class="floating-jobs individual-job">
-            <div id="unique-floating-job" class="floating-job">
-                <h1 class="job-title"><%= job.jobTitle %></h1>
-                <h2 class="company-name"><%= job.company %></h2>
-                <br><br>
-                <h5 class="job-section">Job Description</h5>
-                <p class="job-description"><%= job.jobDescription %></p>
-                <h5 class="job-section">Requirements</h5>
-                <p class="job-requirements"><%= job.requirements %></p>
-                <h5 class="job-section">Assets</h5>
-                <p class="job-assets"><%= job.assets %></p>
-                <br>
-                <form action="/apply/<%= job._id %>">
-                    <button class="btn btn-lg btn-outline-success apply-btn-job all-btns">Apply now</button>
-                </form>
-            </div>
+
+    <section class="view-applicants-section">
+        <div class="view-applicants-main-title-container">
+            <p class="apps-main-title">Viewing Applicants for Job<br>#<%= job._id %></p>
+        </div>
+        <div class="my-applications-container container-fluid">
+            <% var i = 0; %>
+            <% applicants.forEach(function(applicant) { %>
+                <div class="floating-application-container container-fluid">
+                    <div class="application-job-title-container">
+                        <p class="my-application-title"><strong class="my-application-company-name"><%= applicant.firstName %> <%= applicant.lastName %></strong></p>
+                    </div>
+                    <div class="student-info-container">
+                        <p class="student-id">Student# - <%= applicant._id%></p>
+                    </div>
+                    <div class="floating-application-buttons">
+                        <button id="<%= applicant._id %>" class="btn btn-sm btn-outline-primary view-candidate-profile all-btns">View Candidate Profile</button>
+                    </div>
+                </div>
+                <div id="<%= applicant._id %>-container" class="candidate-profile-outer-container container-fluid" style="display: none;">
+                    <div class="candidate-profile-inner-container container-fluid">
+                        <div class="exit-btn-container">
+                            <button class="btn btn-sm btn-info exit-btn"><i class="fa-thin fa-x"></i></button>
+                        </div>
+                        <div class="candidate-credentials">
+                            <p class="candidate-name"><%= applicant.firstName %> <%= applicant.lastName %></p>
+                        </div>
+                        <div class="candidate-action-btns">
+                            <form action="">
+                                <div class="candidate-btn">
+                                    <button class="btn btn-md btn-primary download-cv-btn all-btns">Download CV</button>
+                                </div>
+                            </form>
+                            <form action="/select-candidate/<%= job._id %>/<%= applicant._id %>" method="POST">
+                                <div class="candidate-btn">
+                                    <button class="btn btn-md btn-outline-success finalize-application-btn download-cv-btn all-btns">Select Candidate</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <% i++; %>
+            <% }); %>
         </div>
     </section>
 
-<!-- Bootstrap, jQuery & Font-Awesome Scripts -->
+
+    <!-- Bootstrap, jQuery & Font-Awesome Scripts -->
 <script src="/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 <script src="https://kit.fontawesome.com/7b145b1c64.js" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+<% applicants.forEach(function(applicant) { %>
+    <script>
+
+        $("#<%= applicant._id %>").on('click', () => {
+            $(".floating-application-container").css('opacity', '0.1');
+            $("#<%= applicant._id %>-container").show(360);
+        });
+
+        $(".exit-btn").on('click', () => 
+        {
+            $("#<%= applicant._id %>-container").hide(180);
+            $(".floating-application-container").css("opacity", "100%");
+        });
+
+    </script>
+<% }); %>
+</body>
+</html>

@@ -31,22 +31,32 @@
 <body class="text-center signup-body">
     <main class="form-signin w-100 m-auto">
         <form action="/login" method="POST">
-          <h1 class="mb-4 brand">SnakePit's JobPit</h1>
-          <h1 class="h3 mb-3 fw-normal signup-title">Please login to your JobPit account</h1>
-
-          <div class="form-floating">
-            <input type="email" class="form-control" id="floatingInput" name="email">
-            <label for="floatingInput">Email address</label>
+          <div class="login-container">
+            <h1 class="mb-4 brand">SnakePit's JobPit</h1>
+            <h1 class="h3 mb-3 fw-normal signup-title">Please login to your JobPit account</h1>
+  
+            <div class="form-floating">
+              <input type="email" class="form-control" id="floatingInput" name="email">
+              <label for="floatingInput">Email address</label>
+            </div>
+            <div class="form-floating last">
+              <input type="password" class="form-control" id="floatingPassword" name="password">
+              <label for="floatingPassword">Password</label>
+            </div>
+  
+            <button class="w-100 btn btn-lg btn-primary login-btn" type="submit">Log in</button>
           </div>
-          <div class="form-floating last">
-            <input type="password" class="form-control" id="floatingPassword" name="password">
-            <label for="floatingPassword">Password</label>
-          </div>
-
-          <button class="w-100 btn btn-lg btn-primary" type="submit">Log in</button>
-          <p class="copyright">2023 - SnakePit's JobPit</p>
         </form>
-        <a href="/">Homepage</a>
+        <div class="no-account-container">
+          <div class="account-sign-up-prompt">
+            <p class="ask-sign-up">Don't have an account?</p>
+            <a class="signup-link" href="/signup">Signup here</a>
+          </div>
+          <div class="login-footer">
+            <p class="copyright">2023 - SnakePit's JobPit</p>
+            <a href="/">Homepage</a>
+          </div>
+        </div>
       </main>
 </body>
 </html>
