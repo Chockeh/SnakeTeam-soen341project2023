@@ -3,7 +3,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const _ = require("lodash");
-const { find } = require("lodash");
+const { find, zip } = require("lodash");
+const multer = require("multer");
+const path = require("path");
 
 const app = express();
 
@@ -34,16 +36,21 @@ var userFullName = "";
 var userEmail = "";
 var accountType = "";
 var accountID = "";
+var errMessage = "";
 
 var jobs = [];
 var employerJobs = [];
 var job;
 var kebabCaseJobTitles = [];
 
-var jobRouteName = "";
+var studentHasCV = true;
 
-var truncatedJobDescription = [];
+var job_id = "";
 
+var applicant_jobs = [];
+var user_applications = [];
+
+var application_error = false;
 
 
 function sleep (time) {
@@ -101,6 +108,14 @@ const jobSchema = new mongoose.Schema(
 
 const Job = mongoose.model("Job", jobSchema);
 
+const applicationSchema = new mongoose.Schema(
+{
+    job_id : {type : mongoose.Schema.Types.ObjectId, ref : "Job"},
+    applicant : userSchema,
+    status : String
+});
+
+const Application = mongoose.model("Application", applicationSchema);
 
 // -- GET --
 
@@ -109,7 +124,8 @@ app.get("/", function(req, res)
     res.render("index", 
     {
         isLoggedIn : loggedIn, 
-        username : userName
+        username : userName,
+        accType : accountType
     });
 });
 
@@ -143,7 +159,8 @@ app.get("/login-success", function(req,res)
         {
             loginSuccessMsg : loginSuccessMessage, 
             isLoggedIn : loggedIn, 
-            username : userName
+            username : userName,
+            accType : accountType
         }
     );
 });
@@ -183,7 +200,8 @@ app.get("/post-job", function(req, res)
     res.render("post-job", 
         {
             isLoggedIn : loggedIn, 
-            username : userName
+            username : userName,
+            accType : accountType
         }
     );
 });
@@ -205,17 +223,15 @@ app.get("/student-jobs", function(req, res)
         }
     });
 
-    console.log(jobs);
-
     sleep(250).then(() => {
         res.render("student-jobs", 
         {
             isLoggedIn : loggedIn, 
             username: userName, 
             jobs : jobs,
-            kebabTitles: kebabCaseJobTitles
-        }
-    );
+            kebabTitles: kebabCaseJobTitles,
+            accType : accountType, 
+        });
     });
 });
   
@@ -284,11 +300,147 @@ app.get("/myjobs", async function(req, res)
         {
             isLoggedIn : loggedIn, 
             username : userName,
-            employerJobs : employerJobs
+            employerJobs : employerJobs,
+            accType : accountType
         })
-    })
+    });
 }); 
 
+app.get("/apply/:jobID", function(req, res)
+{
+    job_id = req.params.jobID.toString();
+
+    if (!loggedIn)
+    {
+        res.redirect("/login");
+    }
+
+    else
+    {
+        Job.findOne({_id : job_id}, function(err, jobObject) 
+        {
+            if (err)
+            {
+                console.log(err);
+            }
+            else
+            {
+                console.log(jobObject);
+                // thisJob = jobObject;
+                console.log(jobObject.company);
+                console.log(jobObject.jobTitle);
+                res.render("apply-to-job", 
+                {
+                    isLoggedIn : loggedIn, 
+                    username : userName,
+                    accType : accountType,
+                    job : jobObject,
+                    studentHasCV : studentHasCV
+                });  
+            }
+        })
+    }
+});
+
+
+// To get the list of applications of the student user.
+app.get("/my-applications", async function(req, res)
+{
+    async function findUserApplications()
+    {
+        applicant_jobs = [];
+        user_applications = [];
+
+        User.findOne({_id : accountID}, (err, student) =>
+        {
+            if (err) {console.log(err);}
+
+            Application.find({applicant : student}, (err, application_arr) =>
+            {
+                if (err) { console.log(err); }
+                else
+                {
+                    var i = 0;
+                    application_arr.forEach((application) => 
+                    {
+                        user_applications.push(application);
+                        console.log("----- CURRENT APPLICATION -----");
+                        console.log(user_applications[i]);
+
+                        Job.findOne({_id : application.job_id}, (e, job) =>
+                        {
+                            var j = 0
+                            if (e) { console.log(e); }
+                            else
+                            {
+                                applicant_jobs.push(job);
+                                console.log("----- CURRENT JOB -----");
+                                console.log(applicant_jobs[j]);
+                            }
+                            j++;
+                        });
+                        i++;
+                    });
+                }
+            });
+        });
+    }
+
+    await findUserApplications();
+
+    sleep(800).then(() => 
+    {
+        res.render("my-applications", 
+        {
+            isLoggedIn : loggedIn, 
+            username : userName,
+            accType : accountType,
+            applications : user_applications,
+            jobs : applicant_jobs
+        });
+    });
+});
+
+app.get("/applicants/:jobID", async function(req, res)
+{
+    var jobID = req.params.jobID;
+    var candidates = [];
+
+    async function findUserApplicants()
+    {
+        Application.find({job_id : jobID}, async (err, studentApplications) =>
+        {
+            if (err) { console.log(err); }
+
+            else
+            {
+                studentApplications.forEach(function(studentApplication)
+                {
+                    candidates.push(studentApplication.applicant);
+                });
+            }
+
+            Job.findOne({_id : jobID}, (err, job) =>
+            {
+                if (err) {console.log(err);}
+                else
+                {
+                    console.log(job);
+                    res.render("view-applicants", {
+                        isLoggedIn : loggedIn, 
+                        username : userName,
+                        accType : accountType,
+                        applicants : candidates,
+                        job: job
+                    });
+                }
+            });
+        });
+    }
+
+    await findUserApplicants(); 
+
+});
 
 // -- POST --
 
@@ -469,6 +621,81 @@ app.post("/job-post-success", async function(req, res)
 
     res.redirect("/profile");
 }); 
+
+app.post("/confirm-apply/:job_id", function(req, res)
+{
+    console.log("Account_id: " + accountID);
+    var student_id = accountID;
+    var jobID = req.params.job_id;
+    console.log(jobID);
+
+    User.findOne({_id : student_id}, (err, student) => 
+    {
+        if (err) { console.log(err); }
+
+        else 
+        {
+            Application.findOne({job_id : jobID, applicant : student}, (err, application) =>
+            {
+                if (err) {console.log(err);}
+        
+                else
+                {
+                    if (application)
+                    {
+                        errMessage = "User already applied for this job.";
+                        console.log(errMessage);
+                        application_error = true;
+                        res.redirect("/student-jobs");
+                    }
+                    else
+                    {
+                        application = Application.create(
+                        {
+                            job_id : jobID,
+                            applicant : student
+                        });
+                
+                        console.log("Application successfully sent.");
+                
+                        errMessage = "";
+                        application_error = false;
+                
+                        res.redirect("/my-applications");
+                    }
+
+                }
+            })
+        }
+    });
+
+});
+
+app.post("/select-candidate/:jobID/:applicantID", function(req, res) {
+    var jobID = req.params.jobID;
+    var applicant_id = req.params.applicantID;
+
+    console.log("Job ID ==> " + jobID);
+    console.log("Applicant ID ==> " + applicant_id);
+
+    User.findOne({_id : applicant_id}, (err, user) =>
+    {
+        if (err) { console.log(err); }
+        else
+        {
+            Application.findOneAndUpdate({job_id : jobID, applicant : user}, {status : "Selected"}, (err) => 
+            {
+                if (err) { console.log(err); }
+        
+                else
+                {
+                    console.log("Applicant's application status was successfully updated.");
+                    res.redirect("/profile");
+                }
+            });
+        }
+    })
+});
 
 app.listen(3000, function()
 {
