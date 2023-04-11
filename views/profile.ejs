@@ -1,0 +1,219 @@
+<!doctype html>
+
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Snakepit</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <!-- CSS Styles Sheets -->
+    <link rel="stylesheet" href="/global-styles.css">
+    <link rel="stylesheet" href="/styles.css">
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+
+        <div class="container-fluid">
+
+            <a href="/" class="brand-link">JobPit</a>
+            <hr style="height: 1rem; color:white">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="nav-placeholder-div" style="color: white;"></div>
+                <ul class="navbar-nav nav-main-items">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/student-jobs" class="nav-link">Student Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Student Talent</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Experienced Workers</a>
+                    </li>
+                    <% if(isLoggedIn){ %>
+                        <form action="/profile" method="GET">
+                            <li class="nav-item collapsed-item">
+                                <a href="/profile" class="nav-link">My Profile</a>
+                            </li>
+                        </form>
+                    <% } else{ %>
+                        <form action="/login">
+                            <li class="nav-item collapsed-item">
+                                <a href="/login" class="nav-link">Log In</a>
+                            </li>
+                        </form>
+                        <form action="/signup" method="GET">
+                            <li class="nav-item collapsed-item">
+                                <a href="/signup" class="nav-link">Sign Up</a>
+                            </li>
+                        </form>
+                    <% } %>
+                </ul>
+                <% if(isLoggedIn){ %>
+                    <ul class="navbar-nav justify-content-right nav-forms user-profile-nav">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-success dropdown-toggle inner-nav-form user-profile-button" data-bs-toggle="dropdown"><%= username %></button>
+                            <ul class="dropdown-menu user-dropdown">
+                              <li><a class="dropdown-item" href="/profile">My <%= accType %> <i class="fa-regular fa-user"></i></a></li>
+                              <li><a class="dropdown-item" href="/signout">Sign Out <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
+                            </ul>
+                          </div>
+                    </ul>            
+                <% } else{ %>
+                    <ul class="navbar-nav justify-content-right nav-forms">
+                        <li class="nav-item">
+                            <form action="/login" method="get">
+                                <button type="submit" class="btn btn-light inner-nav-form">Log In</button>
+                            </form>
+                        </li>
+                        <li class="nav-item">
+                            <form action="/signup" method="get">
+                                <button type="submit" class="btn btn-primary">Sign Up</button>
+                            </form>
+                        </li>
+                    </ul>
+                <% } %>
+            </div>
+
+        </div>
+    </nav>
+
+    <section id="profile-section">
+        <div class="container-fluid profile-container">
+            <h2 class="user-account-type"><b><%= accType %></b></h2>
+            <h3 class="user-full-name"><%= fullName %></h3>
+            <div class="account-details">
+                <h5 class="account-details-title"><b>Account Details:</b></h5>
+                <p class="details">First name: <%= userFirstName %></p>
+                <p class="details">Last name: <%= userLastName %></p>
+                <p class="details">email: <%= userEmail %></p>
+            </div>
+            <div class="profile-forms">
+                <div class="account-specific-buttons">
+
+                    <!-- Employer Account Type Profile Options -->
+                    <% if(accType === "EMPLOYER Account") { %>
+                        <form id="profile-form" action="/post-job" method="GET">
+                            <button id="profile-button" class="btn btn-md btn-primary post-job-button">Post a Job</button>
+                        </form>
+                        <form id="profile-form" action="/myjobs" method="GET">
+                            <button id="profile-button" class="btn btn-md btn-dark view-jobs-button">My Jobs</button>
+                        </form>
+
+                    <!-- Student Account Type Profile Options -->
+                    <% }else { %>
+
+                        <!-- Student did not upload their CV -->
+                        <% if (JSON.stringify(user.cv) === '{}') { %>
+                            <button id="profile-button" style="margin-right: 0.5rem;" class="btn btn-md btn-primary cv-button">Post your CV</button>
+                        <!-- Student uploaded their CV -->
+                        <% } else { %>
+                            <div class="view-btn-container">
+                                <button id="profile-button" style="margin-right: 0.5rem;" class="btn btn-md btn-outline-primary view-cv-button" onclick="viewCv('<%= user._id %>')">View my CV</button>
+                                <div class="upload-new-cv-div">
+                                    <a href="#" id="profile-button" class="upload-new-cv-button nav-link">Upload new CV</a>
+                                </div>    
+                            </div>
+                        <% } %>
+                       
+                        <form action="/my-applications" method="GET" id="profile-form">
+                            <button id="profile-button" class="btn btn-md btn-outline-success apply-with-profile-btn-2 my-applications-btn">View My Applications</button>
+                        </form>
+                    <% } %>
+                    <form id="profile-form" class="profile-signout-form" action="/signout" method="GET">
+                        <button id="profile-button" class="btn btn-md btn-outline-danger signout-button" type="submit">Signout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="upload-cv-div" style="display: none;">
+            <div class="inner-upload-cv">
+                <div class="exit-btn-container">
+                    <button class="btn btn-sm btn-info exit-btn"><i class="fa-thin fa-x"></i></button>
+                </div>
+                <form action="/upload/<%= accountID %>" method="POST" enctype="multipart/form-data" id="profile-form">
+                    <p class="question-cover-letter mb-3 fs-6">Upload your CV</p>
+                    <label for="selectedFile" class="btn btn-primary btn-sm select-file-btn w-75">
+                        <i class="fa-solid fa-upload"></i> &nbsp; Select a PDF File
+                    </label>
+                    <input id="selectedFile" name="file" type="file" style="display: none;">
+                    <div class="file-name-container mx-auto">
+                        <p class="attached-cover-letter">Browse your computer files above...</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline-success finalize-application-btn all-btns">Submit</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bootstrap, jQuery & Font-Awesome Scripts -->
+    <script src="/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/7b145b1c64.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <script>
+
+        var attached_file = $("#selectedFile");
+        var text = $(".attached-cover-letter");
+        var file_name = null;
+
+        function viewCv(userId) 
+        {
+            const url = `/view-cv/${userId}`;
+            window.open(url, '_blank');
+        }
+
+        $(".cv-button").on('click', () => {
+            $(".profile-container").css('opacity', '0.1');
+            $(".upload-cv-div").show(250);
+        });
+        $(".exit-btn").on('click', () => 
+        {
+            $(".upload-cv-div").hide(100);
+            $(".profile-container").css("opacity", "100%");
+            text.html('Browse your computer for files ...')
+        });
+
+        $(".upload-new-cv-button").on('click', () => 
+        {
+            $(".profile-container").css('opacity', '0.1');
+            $(".upload-cv-div").show(250);   
+        });
+
+        attached_file.on('change', (e) => 
+        {
+            try
+            {
+                file_name = e.target.files[0].name;
+                console.log(file_name);
+                text.html(file_name);
+            }
+            catch(error)
+            {
+                console.log("User cancelled his choice.");
+            }
+        });
+    </script>
+
+    </body>
+
+    </html>

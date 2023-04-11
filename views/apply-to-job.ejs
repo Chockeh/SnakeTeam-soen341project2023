@@ -1,0 +1,285 @@
+<!doctype html>
+
+<html lang="en">
+    
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Snakepit</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <!-- CSS Styles Sheets -->
+    <link rel="stylesheet" href="/global-styles.css">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+
+        <div class="container-fluid">
+
+            <a href="/" class="brand-link">JobPit</a>
+            <hr style="height: 1rem; color:white">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="nav-placeholder-div" style="color: white;">
+
+                </div>
+                <ul class="navbar-nav nav-main-items">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/student-jobs" class="nav-link">Student Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Student Talent</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Experienced Workers</a>
+                    </li>
+                    <% if(isLoggedIn){ %>
+                        <form action="/profile" method="GET">
+                            <li class="nav-item collapsed-item">
+                                <a href="/profile" class="nav-link">My Profile</a>
+                            </li>
+                        </form>
+                    <% } else{ %>
+                        <form action="/login">
+                            <li class="nav-item collapsed-item">
+                                <a href="/login" class="nav-link">Log In</a>
+                            </li>
+                        </form>
+                        <form action="/signup" method="GET">
+                                <a href="/signup" class="nav-link">Sign Up</a>
+                            </li>
+                        </form>
+                    <% } %>
+                </ul>
+                <% if(isLoggedIn){ %>
+                    <ul class="navbar-nav justify-content-right nav-forms user-profile-nav">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-success dropdown-toggle inner-nav-form user-profile-button" data-bs-toggle="dropdown"><%= username %></button>
+                            <ul class="dropdown-menu user-dropdown">
+                              <li><a class="dropdown-item" href="/profile">My <%= accType %> <i class="fa-regular fa-user"></i></a></li>
+                              <li><a class="dropdown-item" href="/signout">Sign Out <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
+                            </ul>
+                          </div>
+                    </ul>            
+                <% } else{ %>
+                    <ul class="navbar-nav justify-content-right nav-forms">
+                        <li class="nav-item">
+                            <form action="/login" method="get">
+                                <button type="submit" class="btn btn-light inner-nav-form">Log In</button>
+                            </form>
+                        </li>
+                        <li class="nav-item">
+                            <form action="/signup" method="get">
+                                <button type="submit" class="btn btn-primary">Sign Up</button>
+                            </form>
+                        </li>
+                    </ul>
+                <% } %>
+            </div>
+
+        </div>
+    </nav>
+
+    <section id="confirm-application">
+        <div class="container-fluid box-window-apply">
+            <div class="application-form-container">
+                <div class="apply-title-container">
+                    <p class="application-title">You are applying to <b class="job-title-company"><%= job.company %></b></p>
+                    <p class="application-position">for the <b class="job-title-job-title"><%= job.jobTitle %></b> position</p>
+                </div>
+                <% if (studentHasCV) { %>
+                    <div class="application-forms">
+                        <button class="btn btn-md btn-success apply-with-profile-btn" style="padding: 0.75rem;">
+                            Apply with Profile &nbsp; <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                        <div class="input-container">
+                            <p class="question-cover-letter">Have a Cover Letter?</p>
+                            <label for="files" class="btn btn-primary btn-sm select-file-btn">
+                                <i class="fa-solid fa-upload"></i> &nbsp; Select File
+                            </label>
+                            <input id="files" type="file" style="display: none;">
+                            <div class="file-name-container">
+                                <p class="attached-cover-letter">Browse your computer files above...</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-md btn-outline-primary apply-for-job-submit-btn">
+                            <span class="job-submit-btn-span">Apply with Profile + Cover Letter</span>
+                        </button>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+         <div class="action-profile-apply" style="display: none;">
+            <div class="container-fluid profile-apply-container">
+                <div class="exit-btn-container">
+                    <button class="btn btn-sm btn-info exit-btn"><i class="fa-thin fa-x"></i></button>
+                </div>
+                <p class="profile-apply-title">
+                    You are sending the following to <b class="job-title-company" style="border-bottom: none;"><%= job.company %></b>
+                </p>
+                <div class="profile-apply-package">
+                    <ul class="package-list">
+                        <li class="package-item">Sisahga Phimmasone (User's First Name)</li>
+                        <% if (typeof currentUser.cv.data === 'undefined') { %>
+                            <p class="cv-action-message fs-4"><strong>To apply to this job, you must upload your cv.</strong></p>
+                            <button id="profile-button" style="margin-right: 0.5rem;" class="btn btn-md btn-primary cv-button">Post your CV</button>
+                        <% } else { %>
+                            <li class="package-item"><i>Your CV</i></li>
+                            <form action="/confirm-apply/<%= job._id %>" method="POST">
+                                <button class="btn btn-md btn-outline-success finalize-application-btn">Confirm Application <i class="fa-regular fa-circle-check"></i></button>
+                            </form>
+                        <% } %>
+                    </ul>
+                </div>
+            </div> 
+         </div>
+         <div class="action-cover-letter-apply" style="display: none;">
+            <div class="container-fluid profile-apply-container">
+                <div class="exit-btn-container">
+                    <button class="btn btn-sm btn-info exit-btn-second"><i class="fa-thin fa-x"></i></button>
+                </div>
+                <p class="profile-apply-title">
+                    You are sending the following to <b class="job-title-company" style="border-bottom: none;"><%= job.company %></b>
+                </p>
+                <div class="profile-apply-package">
+                    <ul class="package-list">
+                        <li class="package-item">Sisahga Phimmasone (User's First Name)</li>
+                        <li class="package-item"><i>CV.pdf</i></li>
+                        <li class="package-item"><i>CoverLetter.pdf</i></li>
+                    </ul>
+                </div>
+                <form action="/confirm-apply/<%= job._id %>" method="POST">
+                    <button class="btn btn-md btn-outline-success finalize-application-btn">Confirm Application &nbsp;&nbsp; <i class="fa-regular fa-circle-check"></i></button>
+                </form>
+            </div> 
+         </div>
+         <div class="alert alert-danger no-cover-letter-warning" style="display: none;" role="alert">
+            You must upload a cover letter to proceed with this action.
+          </div>
+
+          <div class="upload-cv-div" style="display: none; background-color: black; color: white; border-radius: 0.25rem;">
+            <div class="inner-upload-cv">
+                <div class="exit-btn-container">
+                    <button class="btn btn-sm btn-info exit-btn-2" style="color: white;"><i class="fa-thin fa-x"></i></button>
+                </div>
+                <form action="/upload/<%= currentUser._id %>" method="POST" enctype="multipart/form-data" id="profile-form">
+                    <p class="question-cover-letter mb-3 fs-6">Upload your CV</p>
+                    <label for="selectedFile" class="btn btn-primary btn-sm select-file-btn w-75">
+                        <i class="fa-solid fa-upload"></i> &nbsp; Select a PDF File
+                    </label>
+                    <input id="selectedFile" name="file" type="file" style="display: none;">
+                    <div class="file-name-container mx-auto">
+                        <p class="attached-cover-letter" style="color: black;">Browse your computer files above...</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline-success finalize-application-btn all-btns">Submit</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bootstrap, jQuery & Font-Awesome Scripts -->
+<script src="/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/7b145b1c64.js" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+<script>
+    // File input variables (Cover Letter)
+    var attached_file = $("#selectedFile");
+    var text = $(".attached-cover-letter");
+    console.log(attached_file[0].name);
+    var file_name = null;
+    var submit_cover_letter = $(".apply-for-job-submit-btn");
+
+    // Apply with Profile variables
+    var profile_apply_btn = $(".apply-with-profile-btn");
+    var load_page_div = $(".box-window-apply");
+    var prompt_div = $(".action-profile-apply");
+    var cover_letter_prompt_div = $(".action-cover-letter-apply");
+    var no_cover_letter_alert = $(".alert-danger");
+
+    $(".exit-btn").on('click', () => 
+    {
+        prompt_div.hide();
+        load_page_div.css("opacity", "100%");
+        submit_cover_letter.removeClass("btn-primary");
+        submit_cover_letter.addClass("btn-outline-primary");
+    });
+
+    $(".cv-button").on('click', () => {
+        $(".profile-container").css('opacity', '0.1');
+        $(".upload-cv-div").show(250);
+    });
+    $(".exit-btn-2").on('click', () => 
+    {
+        $(".upload-cv-div").hide(100);
+        $(".profile-container").css("opacity", "100%");
+        text.html('Browse your computer for files ...')
+    });
+
+    $(".exit-btn-second").on('click', () => 
+    {
+        cover_letter_prompt_div.hide();
+        load_page_div.css("opacity", "100%");
+        submit_cover_letter.removeClass("btn-primary");
+        submit_cover_letter.addClass("btn-outline-primary");
+    });
+
+    attached_file.on('change', (e) => 
+    {
+        try
+        {
+            file_name = e.target.files[0].name;
+            console.log(file_name);
+            text.html(file_name);
+        }
+        catch(error)
+        {
+            console.log("User cancelled his choice.");
+        }
+    });
+
+    profile_apply_btn.on('click', (event) => 
+    {
+        load_page_div.css("opacity", "20%");
+        prompt_div.show(250);
+    });
+
+    submit_cover_letter.on('click', () => 
+    {
+        if (file_name == null)
+        {
+            no_cover_letter_alert.show(200);
+            setTimeout(() => { no_cover_letter_alert.hide(200) }, 2000);
+        }
+        else
+        {
+            submit_cover_letter.removeClass("btn-outline-primary");
+            submit_cover_letter.addClass("btn-primary");
+
+            load_page_div.css("opacity", "20%");
+            cover_letter_prompt_div.show(250);
+        }
+    });
+
+</script>
+
+</body>
+
+</html>

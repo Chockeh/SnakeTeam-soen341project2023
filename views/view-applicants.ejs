@@ -1,0 +1,173 @@
+<!doctype html>
+
+<html lang="en">
+    
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Snakepit</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <!-- CSS Styles Sheets -->
+    <link rel="stylesheet" href="/global-styles.css">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+
+        <div class="container-fluid">
+
+            <a href="/" class="brand-link">JobPit</a>
+            <hr style="height: 1rem; color:white">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="nav-placeholder-div" style="color: white;">
+
+                </div>
+                <ul class="navbar-nav nav-main-items">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/student-jobs" class="nav-link">Student Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Student Talent</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Experienced Workers</a>
+                    </li>
+                    <% if(isLoggedIn){ %>
+                        <form action="/profile" method="GET">
+                            <li class="nav-item collapsed-item">
+                                <a href="/profile" class="nav-link">My Profile</a>
+                            </li>
+                        </form>
+                    <% } else{ %>
+                        <form action="/login">
+                            <li class="nav-item collapsed-item">
+                                <a href="/login" class="nav-link">Log In</a>
+                            </li>
+                        </form>
+                        <form action="/signup" method="GET">
+                                <a href="/signup" class="nav-link">Sign Up</a>
+                            </li>
+                        </form>
+                    <% } %>
+                </ul>
+                <% if(isLoggedIn){ %>
+                    <ul class="navbar-nav justify-content-right nav-forms user-profile-nav">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-success dropdown-toggle inner-nav-form user-profile-button" data-bs-toggle="dropdown"><%= username %></button>
+                            <ul class="dropdown-menu user-dropdown">
+                              <li><a class="dropdown-item" href="/profile">My <%= accType %> <i class="fa-regular fa-user"></i></a></li>
+                              <li><a class="dropdown-item" href="/signout">Sign Out <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
+                            </ul>
+                          </div>
+                    </ul>            
+                <% } else{ %>
+                    <ul class="navbar-nav justify-content-right nav-forms">
+                        <li class="nav-item">
+                            <form action="/login" method="get">
+                                <button type="submit" class="btn btn-light inner-nav-form">Log In</button>
+                            </form>
+                        </li>
+                        <li class="nav-item">
+                            <form action="/signup" method="get">
+                                <button type="submit" class="btn btn-primary">Sign Up</button>
+                            </form>
+                        </li>
+                    </ul>
+                <% } %>
+            </div>
+
+        </div>
+    </nav>
+
+
+    <section class="view-applicants-section">
+        <div class="view-applicants-main-title-container">
+            <p class="apps-main-title">Viewing Applicants for Job<br>#<%= job._id %></p>
+        </div>
+        <div class="my-applications-container container-fluid">
+            <% var i = 0; %>
+            <% applicants.forEach(function(applicant) { %>
+                <div class="floating-application-container container-fluid">
+                    <div class="application-job-title-container">
+                        <p class="my-application-title"><strong class="my-application-company-name"><%= applicant.firstName %> <%= applicant.lastName %></strong></p>
+                    </div>
+                    <div class="student-info-container">
+                        <p class="student-id">Student# - <%= applicant._id%></p>
+                    </div>
+                    <div class="floating-application-buttons">
+                        <button id="<%= applicant._id %>" class="btn btn-sm btn-outline-primary view-candidate-profile all-btns">View Candidate Profile</button>
+                    </div>
+                </div>
+                <div id="<%= applicant._id %>-container" class="candidate-profile-outer-container container-fluid" style="display: none;">
+                    <div class="candidate-profile-inner-container container-fluid">
+                        <div class="exit-btn-container">
+                            <button class="btn btn-sm btn-info exit-btn"><i class="fa-thin fa-x"></i></button>
+                        </div>
+                        <div class="candidate-credentials">
+                            <p class="candidate-name"><%= applicant.firstName %> <%= applicant.lastName %></p>
+                        </div>
+                        <div class="candidate-action-btns">
+                            <div class="candidate-btn">
+                                    <button id="<%= applicant._id %>-cv-btn" class="btn btn-md btn-primary download-cv-btn all-btns" onclick="viewCv('<%= applicant._id %>')">View CV</button>
+                            </div>
+                            <form action="/select-candidate/<%= job._id %>/<%= applicant._id %>" method="POST">
+                                <div class="candidate-btn">
+                                    <button class="btn btn-md btn-outline-success finalize-application-btn download-cv-btn all-btns">Select Candidate</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <% i++; %>
+            <% }); %>
+        </div>
+    </section>
+
+
+    <!-- Bootstrap, jQuery & Font-Awesome Scripts -->
+<script src="/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/7b145b1c64.js" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+<% applicants.forEach(function(applicant) { %>
+    <script>
+
+        function viewCv(userId) 
+        {
+            const url = `/view-cv/${userId}`;
+            window.open(url, '_blank');
+        }
+
+        $("#<%= applicant._id %>").on('click', () => {
+            $(".floating-application-container").css('opacity', '0.1');
+            $("#<%= applicant._id %>-container").show(360);
+        });
+
+        $(".exit-btn").on('click', () => 
+        {
+            $("#<%= applicant._id %>-container").hide(180);
+            $(".floating-application-container").css("opacity", "100%");
+        });
+
+    </script>
+<% }); %>
+</body>
+</html>
