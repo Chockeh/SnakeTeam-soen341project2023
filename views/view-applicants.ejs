@@ -124,17 +124,9 @@
                             <p class="candidate-name"><%= applicant.firstName %> <%= applicant.lastName %></p>
                         </div>
                         <div class="candidate-action-btns">
-<<<<<<< HEAD
-                            <form action="">
-                                <div class="candidate-btn">
-                                    <button class="btn btn-md btn-primary download-cv-btn all-btns">Download CV</button>
-                                </div>
-                            </form>
-=======
                             <div class="candidate-btn">
                                     <button id="<%= applicant._id %>-cv-btn" class="btn btn-md btn-primary download-cv-btn all-btns" onclick="viewCv('<%= applicant._id %>')">View CV</button>
                             </div>
->>>>>>> 7bca656 (Source Code for Jobpit)
                             <form action="/select-candidate/<%= job._id %>/<%= applicant._id %>" method="POST">
                                 <div class="candidate-btn">
                                     <button class="btn btn-md btn-outline-success finalize-application-btn download-cv-btn all-btns">Select Candidate</button>
@@ -158,15 +150,12 @@
 <% applicants.forEach(function(applicant) { %>
     <script>
 
-<<<<<<< HEAD
-=======
         function viewCv(userId) 
         {
             const url = `/view-cv/${userId}`;
             window.open(url, '_blank');
         }
 
->>>>>>> 7bca656 (Source Code for Jobpit)
         $("#<%= applicant._id %>").on('click', () => {
             $(".floating-application-container").css('opacity', '0.1');
             $("#<%= applicant._id %>-container").show(360);

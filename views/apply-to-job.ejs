@@ -136,14 +136,6 @@
                 <div class="profile-apply-package">
                     <ul class="package-list">
                         <li class="package-item">Sisahga Phimmasone (User's First Name)</li>
-<<<<<<< HEAD
-                        <li class="package-item"><i>CV.pdf</i></li>
-                    </ul>
-                </div>
-                <form action="/confirm-apply/<%= job._id %>" method="POST">
-                    <button class="btn btn-md btn-outline-success finalize-application-btn">Confirm Application <i class="fa-regular fa-circle-check"></i></button>
-                </form>
-=======
                         <% if (typeof currentUser.cv.data === 'undefined') { %>
                             <p class="cv-action-message fs-4"><strong>To apply to this job, you must upload your cv.</strong></p>
                             <button id="profile-button" style="margin-right: 0.5rem;" class="btn btn-md btn-primary cv-button">Post your CV</button>
@@ -155,7 +147,6 @@
                         <% } %>
                     </ul>
                 </div>
->>>>>>> 7bca656 (Source Code for Jobpit)
             </div> 
          </div>
          <div class="action-cover-letter-apply" style="display: none;">
@@ -213,11 +204,7 @@
 
 <script>
     // File input variables (Cover Letter)
-<<<<<<< HEAD
-    var attached_file = $("#files");
-=======
     var attached_file = $("#selectedFile");
->>>>>>> 7bca656 (Source Code for Jobpit)
     var text = $(".attached-cover-letter");
     console.log(attached_file[0].name);
     var file_name = null;
@@ -238,8 +225,6 @@
         submit_cover_letter.addClass("btn-outline-primary");
     });
 
-<<<<<<< HEAD
-=======
     $(".cv-button").on('click', () => {
         $(".profile-container").css('opacity', '0.1');
         $(".upload-cv-div").show(250);
@@ -251,7 +236,6 @@
         text.html('Browse your computer for files ...')
     });
 
->>>>>>> 7bca656 (Source Code for Jobpit)
     $(".exit-btn-second").on('click', () => 
     {
         cover_letter_prompt_div.hide();

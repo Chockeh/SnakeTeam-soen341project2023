@@ -3,8 +3,6 @@
     --light-blue: #C7EEFF;
     --darker-blue: #0077C0;
     --black: #1D242B;
-<<<<<<< HEAD
-=======
 }
 
 section {
@@ -13,5 +11,4 @@ section {
 
 .btn-close:focus {
     box-shadow: none;
->>>>>>> 7bca656 (Source Code for Jobpit)
 }
