@@ -1,4 +1,4 @@
-// -- REQUIRING MODULES --
+// ********** =========== BACKEND INITIALIZATION *********** ==========
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -7,6 +7,7 @@ const { find, zip } = require("lodash");
 const multer = require("multer");
 const path = require("path");
 const fs = require('fs');
+const { log } = require("console");
 
 const app = express();
 
@@ -16,7 +17,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 
-// Multer initialization
+
+// *** =============================== MULTER ================================= ***
+
+
 const storage = multer.memoryStorage({
     destination: function(req, file, cb) {
         const dir = './uploads';
@@ -43,6 +47,12 @@ const upload = multer({
 });
 
 
+// *** ================================ END OF MULTER ================================== ***
+
+
+
+
+
 // Connecting to MongoDB
 main().then(console.log("Successfully connected to MongoDB Atlas.")).catch((err) => console.log(err));
 async function main()
@@ -52,7 +62,7 @@ async function main()
 }
 
 
-// VARIABLES
+// *** =========================== VARIABLES ============================= ***
 
 var loggedIn = false;
 var signUpMessageOn = false;
@@ -83,12 +93,23 @@ var deletedJob = false;
 var deletedJobId = "";
 
 
+// *** =========================== END OF VARIABLES ============================= ***
+
+
+
+
+// ======================= Sleep Function ========================
+
 function sleep (time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 
-// -- MONGOOSE SCHEMAS --
+
+
+
+
+// ******* ========================================= MONGOOSE SCHEMAS & MODELS ===================================== ********
 
 const userSchema = new mongoose.Schema(
 {
@@ -119,7 +140,8 @@ const userSchema = new mongoose.Schema(
     cv: {
         data: Buffer,
         contentType: String
-    }
+    },
+    skills: String
 });
 
 const User = mongoose.model("User", userSchema);
@@ -151,7 +173,81 @@ const applicationSchema = new mongoose.Schema(
 
 const Application = mongoose.model("Application", applicationSchema);
 
-// -- GET --
+
+// ******* =================================== END OF MONGOOSE SCHEMAS & MODELS =============================== *********
+
+
+
+
+
+
+// ******* ================================ SUGGESTING JOB POSTING TO STUDENT ================================ *******
+
+/* --> Logic: 
+        - Query all job postings for job requirements (required skills)
+        - Query the skills of the logged on user and split every word from their skills into an array of words
+        - Filter through every job posting job requirements and store all jobs that include any of the user's skills
+        - Display below the user's profile a <div> for each job that found a match with the user's skills
+*/
+
+/* Aimee's Code */
+// Function to browse student profiles and suggest a job posting
+
+job_requirements = [];
+
+function suggestJobPosting() 
+{
+    try 
+    {
+        const randomStudentIndex = Math.floor(Math.random() * studentProfiles.length);
+        const randomStudent = studentProfiles[randomStudentIndex];
+
+        // ==> Query the jobs in MongoDB
+        const jobPostings = Job.find({}, (err, jobs) =>
+        {
+            if (err) {console.log(err);}
+
+            jobs.forEach(function(job) 
+            {
+                job_requirements.push(job.requirements);
+            });
+
+            return job_requirements;
+        });
+
+        const user_skills = currentUser.skills;
+        const per_skill_array = user_skills.split(',');
+
+        const matching_skills_and_requirements = job_requirements.filter(function(requirement)
+        {
+            return 
+        });
+
+
+        const matchingJobPostings = jobPostings.filter(job => 
+        {
+            return job.requiredSkills.every(skill => randomStudent.skills.includes(skill));
+        });
+
+        const randomJobPostingIndex = Math.floor(Math.random() * matchingJobPostings.length);
+        const suggestedJobPosting = matchingJobPostings[randomJobPostingIndex];
+
+        // Display the job posting to the student
+        console.log(`Suggested job posting: ${suggestedJobPosting.title}`);
+    } 
+
+    catch (err) 
+    {
+      console.error('Error browsing student profiles:', err);
+      reportToAdministrator('Cannot browse student profiles');
+    }
+}
+
+
+
+
+// ******* ======================================= ==> GET ROUTES <== ===================================== *******
+
 
 app.get("/", function(req, res)
 {
@@ -485,7 +581,21 @@ app.get("/applicants/:jobID", async function(req, res)
 
 });
 
-// -- POST --
+
+
+// ******* ======================================== END OF GET ROUTES ======================================== *******
+
+
+
+
+
+
+
+
+
+
+// ******* ========================================= ==> POST ROUTES <== ====================================== *******
+
 
 app.post("/signup", function(req, res)
 {
@@ -509,6 +619,7 @@ app.post("/signup", function(req, res)
                     accountType: req.body.accountType,
                     firstName: req.body.fname,
                     lastName: req.body.lname,
+                    skills: req.body.skills,
                     email: req.body.email,
                     password: req.body.password
                 },
@@ -832,7 +943,17 @@ app.get('/view-cv/:id', function(req, res)
     });
 });
 
+
+
+// ******* ======================================= END OF POST ROUTES ======================================= *******
+
+
+
+
+
+
 /* ===== Listener ===== */
+
 app.listen(3000, function()
 {
     console.log("Server running on port 3000.");
