@@ -193,47 +193,49 @@ const Application = mongoose.model("Application", applicationSchema);
 /* Aimee's Code */
 // Function to browse student profiles and suggest a job posting
 
-job_requirements = [];
+const job_requirements = [];
 
-function suggestJobPosting() 
+function suggestedJobPostings() 
 {
+
     try 
     {
         const randomStudentIndex = Math.floor(Math.random() * studentProfiles.length);
         const randomStudent = studentProfiles[randomStudentIndex];
 
         // ==> Query the jobs in MongoDB
-        const jobPostings = Job.find({}, (err, jobs) =>
+        Job.find({}, (err, jobs) =>
         {
             if (err) {console.log(err);}
 
             jobs.forEach(function(job) 
             {
-                job_requirements.push(job.requirements);
+                job_requirements.push(job.requirements.toLowerCase());
             });
-
-            return job_requirements;
         });
 
-        const user_skills = currentUser.skills;
+        const user_skills = currentUser.skills.toLowerCase();
         const per_skill_array = user_skills.split(',');
 
-        const matching_skills_and_requirements = job_requirements.filter(function(requirement)
+        // ==> Querying the requirements to see if the user has any matches between his skills and the job requirements
+        const matching_requirements = job_requirements.filter(requirement => per_skill_array.some(skill => requirement.includes(skill)));
+
+
+        const matching_jobs = [];
+
+        // ==> Query the jobs in MongoDB with the matching jobs for the user
+        matching_requirements.forEach(function(requirement)
         {
-            return 
+            Job.find({requirements: requirement}, (err, job) =>
+            {
+                if (err) {console.log(err);}
+
+                matching_jobs.push(job);
+            });
         });
 
+        return matching_jobs;
 
-        const matchingJobPostings = jobPostings.filter(job => 
-        {
-            return job.requiredSkills.every(skill => randomStudent.skills.includes(skill));
-        });
-
-        const randomJobPostingIndex = Math.floor(Math.random() * matchingJobPostings.length);
-        const suggestedJobPosting = matchingJobPostings[randomJobPostingIndex];
-
-        // Display the job posting to the student
-        console.log(`Suggested job posting: ${suggestedJobPosting.title}`);
     } 
 
     catch (err) 
