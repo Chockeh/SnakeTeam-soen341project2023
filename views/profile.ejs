@@ -108,11 +108,8 @@
             </div>
             <div class="profile-forms">
                 <div class="account-specific-buttons">
-<<<<<<< HEAD
-=======
 
                     <!-- Employer Account Type Profile Options -->
->>>>>>> 7bca656 (Source Code for Jobpit)
                     <% if(accType === "EMPLOYER Account") { %>
                         <form id="profile-form" action="/post-job" method="GET">
                             <button id="profile-button" class="btn btn-md btn-primary post-job-button">Post a Job</button>
@@ -120,10 +117,6 @@
                         <form id="profile-form" action="/myjobs" method="GET">
                             <button id="profile-button" class="btn btn-md btn-dark view-jobs-button">My Jobs</button>
                         </form>
-<<<<<<< HEAD
-                    <% }else { %>
-                        <button id="profile-button" style="margin-right: 0.5rem;" class="btn btn-md btn-primary cv-button">Post your CV</button>
-=======
 
                     <!-- Student Account Type Profile Options -->
                     <% }else { %>
@@ -141,7 +134,6 @@
                             </div>
                         <% } %>
                        
->>>>>>> 7bca656 (Source Code for Jobpit)
                         <form action="/my-applications" method="GET" id="profile-form">
                             <button id="profile-button" class="btn btn-md btn-outline-success apply-with-profile-btn-2 my-applications-btn">View My Applications</button>
                         </form>
@@ -157,14 +149,6 @@
                 <div class="exit-btn-container">
                     <button class="btn btn-sm btn-info exit-btn"><i class="fa-thin fa-x"></i></button>
                 </div>
-<<<<<<< HEAD
-                <form action="/upload-cv" enctype="multipart/form-data" id="profile-form">
-                    <label for="files" class="btn btn-primary btn-sm select-file-btn">
-                        <i class="fa-solid fa-upload"></i> &nbsp; Select File
-                    </label>
-                    <input id="files" type="file" style="display: none;">
-                    <div class="file-name-container">
-=======
                 <form action="/upload/<%= accountID %>" method="POST" enctype="multipart/form-data" id="profile-form">
                     <p class="question-cover-letter mb-3 fs-6">Upload your CV</p>
                     <label for="selectedFile" class="btn btn-primary btn-sm select-file-btn w-75">
@@ -172,13 +156,21 @@
                     </label>
                     <input id="selectedFile" name="file" type="file" style="display: none;">
                     <div class="file-name-container mx-auto">
->>>>>>> 7bca656 (Source Code for Jobpit)
                         <p class="attached-cover-letter">Browse your computer files above...</p>
                     </div>
                     <button class="btn btn-sm btn-outline-success finalize-application-btn all-btns">Submit</button>
                 </form>
             </div>
         </div>
+        <% if (matchingJobs.length > 0) { %>
+            <div class="matching-jobs-container">
+                <% matchingJobs.forEach(function(job) { %>
+                    <div class="matching-job">
+                        <p class="job-title"><%= job.jobTitle %></p>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
     </section>
 
     <!-- Bootstrap, jQuery & Font-Awesome Scripts -->
@@ -188,8 +180,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
     <script>
-<<<<<<< HEAD
-=======
 
         var attached_file = $("#selectedFile");
         var text = $(".attached-cover-letter");
@@ -201,7 +191,6 @@
             window.open(url, '_blank');
         }
 
->>>>>>> 7bca656 (Source Code for Jobpit)
         $(".cv-button").on('click', () => {
             $(".profile-container").css('opacity', '0.1');
             $(".upload-cv-div").show(250);
@@ -210,8 +199,6 @@
         {
             $(".upload-cv-div").hide(100);
             $(".profile-container").css("opacity", "100%");
-<<<<<<< HEAD
-=======
             text.html('Browse your computer for files ...')
         });
 
@@ -233,7 +220,6 @@
             {
                 console.log("User cancelled his choice.");
             }
->>>>>>> 7bca656 (Source Code for Jobpit)
         });
     </script>
 

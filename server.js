@@ -197,49 +197,54 @@ const job_requirements = [];
 
 function suggestedJobPostings() 
 {
+    if (currentUser.skills === undefined) { return []; }
 
-    try 
+    else 
     {
-        const randomStudentIndex = Math.floor(Math.random() * studentProfiles.length);
-        const randomStudent = studentProfiles[randomStudentIndex];
-
-        // ==> Query the jobs in MongoDB
-        Job.find({}, (err, jobs) =>
+        try 
         {
-            if (err) {console.log(err);}
-
-            jobs.forEach(function(job) 
-            {
-                job_requirements.push(job.requirements.toLowerCase());
-            });
-        });
-
-        const user_skills = currentUser.skills.toLowerCase();
-        const per_skill_array = user_skills.split(',');
-
-        // ==> Querying the requirements to see if the user has any matches between his skills and the job requirements
-        const matching_requirements = job_requirements.filter(requirement => per_skill_array.some(skill => requirement.includes(skill)));
-
-
-        const matching_jobs = [];
-
-        // ==> Query the jobs in MongoDB with the matching jobs for the user
-        matching_requirements.forEach(function(requirement)
-        {
-            Job.find({requirements: requirement}, (err, job) =>
+            // ==> Query the jobs in MongoDB
+            Job.find({}, (err, jobs) =>
             {
                 if (err) {console.log(err);}
-
-                matching_jobs.push(job);
+    
+                jobs.forEach(function(job) 
+                {
+                    job_requirements.push(job.requirements.toLowerCase());
+    
+                    console.log("JOB REQUIREMENTS --> " + job_requirements);
+                });
             });
-        });
-
-        return matching_jobs;
-    } 
-
-    catch (err) 
-    {
-      console.log(err);
+    
+            console.log("Current User's Skills --> " + currentUser.skills);
+    
+            const user_skills = currentUser.skills.toLowerCase();
+            const per_skill_array = user_skills.split(',');
+    
+            // ==> Querying the requirements to see if the user has any matches between his skills and the job requirements
+            const matching_requirements = job_requirements.filter(requirement => per_skill_array.some(skill => requirement.includes(skill)));
+    
+    
+            const matching_jobs = [];
+    
+            // ==> Query the jobs in MongoDB with the matching jobs for the user
+            matching_requirements.forEach(function(requirement)
+            {
+                Job.find({requirements: requirement}, (err, job) =>
+                {
+                    if (err) {console.log(err);}
+    
+                    matching_jobs.push(job);
+                });
+            });
+    
+            return matching_jobs;
+        } 
+    
+        catch (err) 
+        {
+          console.log(err);
+        }
     }
 }
 
@@ -297,10 +302,12 @@ app.get("/login-success", function(req,res)
 
 app.get("/profile", function(req, res)
 {
-    console.log(accountType);
-    console.log("Current user cv ==> " + currentUser.cv);
-    console.log("User's CV data: " + currentUser.cv.data);
-    console.log("User's CV contentType: " + currentUser.cv.contentType);
+    console.log("Current User ID ==> " + currentUser._id);
+    console.log("User Account Type ==> " + accountType);
+
+    const matchingJobs = suggestedJobPostings();
+    console.log(matchingJobs);
+
     res.render("profile", 
         {
             isLoggedIn : loggedIn,
@@ -311,7 +318,8 @@ app.get("/profile", function(req, res)
             userLastName : userLastName,  
             userEmail : userEmail,
             accountID : accountID,
-            user : currentUser
+            user : currentUser,
+            matchingJobs : matchingJobs
         }
     );
 });
