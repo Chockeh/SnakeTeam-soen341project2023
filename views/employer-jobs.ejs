@@ -99,6 +99,16 @@
     </nav>
 
     <section id="employer-jobs-section">
+<<<<<<< HEAD
+=======
+        <% if (deletedJob) { %>
+            <div class="outer-container-success d-flex justify-content-center align-items-center">
+                <div class="successful-delete-container mx-auto">
+                    <p class="successful-delete-message">Job #<%= deletedJobId %> was successfully deleted.</p>
+                </div>
+            </div>
+        <% } %> 
+>>>>>>> 7bca656 (Source Code for Jobpit)
         <div class="floating-jobs">
             <% employerJobs.forEach(function(job) { %>
                 <% var i = 0; %>
@@ -107,9 +117,22 @@
                         <form action="" method="GET">
                             <button name="editbtn" class="btn btn-sm btn-outline-warning edit-btn all-btns">Edit <i class="fa-solid fa-pen"></i></button>
                         </form>
+<<<<<<< HEAD
                         <form action="/delete-job" method="POST">
                             <button name="delbtn" class="btn btn-sm btn-outline-danger delete-btn all-btns" value="<%= job %>" type="submit" onclick="deleteFunc()">Delete</button>
                         </form>
+=======
+                        <button id="<%= job._id %>-btn" name="delbtn" class="btn btn-sm btn-outline-danger delete-btn all-btns" value="<%= job._id %>">Delete</button>
+                        <div id="<%= job._id %>-container" class="successfully-deleted-job-alert-container">
+                            <div class="delete-inner-container">
+                                <p class="alertMessage px-2"></p>
+                                <form style="display: flex;" action="/delete-job/<%= job._id %>" method="POST">
+                                    <button type="submit" class="delete-alert-btn">Yes</button>
+                                </form>
+                                <button class="delete-alert-btn cancel-delete-btn">No</button>
+                            </div>
+                        </div>
+>>>>>>> 7bca656 (Source Code for Jobpit)
                     </div>
                     
                     <div class="job-title-container">
@@ -141,9 +164,29 @@
 <script src="https://kit.fontawesome.com/7b145b1c64.js" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
+<<<<<<< HEAD
 <script>
     function deleteFunc()
     {
         confirm("Are you sure you want to delete this job posting, permanently?");    
     }
 </script>
+=======
+
+<% employerJobs.forEach(function(job) { %>
+    <script>
+        var deleteJobIdBtn = $("#<%= job._id %>-btn");
+        var currentJobId = deleteJobIdBtn.attr('id');
+        currentJobId = currentJobId.split('-')[0];
+        deleteJobIdBtn.on('click', () =>
+        {
+            $(".alertMessage").text("Are you sure you want to delete this posting?");
+            $("#<%= job._id %>-container").show(200);
+        });
+        $('.cancel-delete-btn').on('click', () =>
+        {
+            $("#<%= job._id %>-container").hide(200);
+        });
+    </script>
+<% }); %>
+>>>>>>> 7bca656 (Source Code for Jobpit)

@@ -136,12 +136,26 @@
                 <div class="profile-apply-package">
                     <ul class="package-list">
                         <li class="package-item">Sisahga Phimmasone (User's First Name)</li>
+<<<<<<< HEAD
                         <li class="package-item"><i>CV.pdf</i></li>
                     </ul>
                 </div>
                 <form action="/confirm-apply/<%= job._id %>" method="POST">
                     <button class="btn btn-md btn-outline-success finalize-application-btn">Confirm Application <i class="fa-regular fa-circle-check"></i></button>
                 </form>
+=======
+                        <% if (typeof currentUser.cv.data === 'undefined') { %>
+                            <p class="cv-action-message fs-4"><strong>To apply to this job, you must upload your cv.</strong></p>
+                            <button id="profile-button" style="margin-right: 0.5rem;" class="btn btn-md btn-primary cv-button">Post your CV</button>
+                        <% } else { %>
+                            <li class="package-item"><i>Your CV</i></li>
+                            <form action="/confirm-apply/<%= job._id %>" method="POST">
+                                <button class="btn btn-md btn-outline-success finalize-application-btn">Confirm Application <i class="fa-regular fa-circle-check"></i></button>
+                            </form>
+                        <% } %>
+                    </ul>
+                </div>
+>>>>>>> 7bca656 (Source Code for Jobpit)
             </div> 
          </div>
          <div class="action-cover-letter-apply" style="display: none;">
@@ -167,6 +181,28 @@
          <div class="alert alert-danger no-cover-letter-warning" style="display: none;" role="alert">
             You must upload a cover letter to proceed with this action.
           </div>
+<<<<<<< HEAD
+=======
+
+          <div class="upload-cv-div" style="display: none; background-color: black; color: white; border-radius: 0.25rem;">
+            <div class="inner-upload-cv">
+                <div class="exit-btn-container">
+                    <button class="btn btn-sm btn-info exit-btn-2" style="color: white;"><i class="fa-thin fa-x"></i></button>
+                </div>
+                <form action="/upload/<%= currentUser._id %>" method="POST" enctype="multipart/form-data" id="profile-form">
+                    <p class="question-cover-letter mb-3 fs-6">Upload your CV</p>
+                    <label for="selectedFile" class="btn btn-primary btn-sm select-file-btn w-75">
+                        <i class="fa-solid fa-upload"></i> &nbsp; Select a PDF File
+                    </label>
+                    <input id="selectedFile" name="file" type="file" style="display: none;">
+                    <div class="file-name-container mx-auto">
+                        <p class="attached-cover-letter" style="color: black;">Browse your computer files above...</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline-success finalize-application-btn all-btns">Submit</button>
+                </form>
+            </div>
+        </div>
+>>>>>>> 7bca656 (Source Code for Jobpit)
     </section>
 
     <!-- Bootstrap, jQuery & Font-Awesome Scripts -->
@@ -177,7 +213,11 @@
 
 <script>
     // File input variables (Cover Letter)
+<<<<<<< HEAD
     var attached_file = $("#files");
+=======
+    var attached_file = $("#selectedFile");
+>>>>>>> 7bca656 (Source Code for Jobpit)
     var text = $(".attached-cover-letter");
     console.log(attached_file[0].name);
     var file_name = null;
@@ -198,6 +238,20 @@
         submit_cover_letter.addClass("btn-outline-primary");
     });
 
+<<<<<<< HEAD
+=======
+    $(".cv-button").on('click', () => {
+        $(".profile-container").css('opacity', '0.1');
+        $(".upload-cv-div").show(250);
+    });
+    $(".exit-btn-2").on('click', () => 
+    {
+        $(".upload-cv-div").hide(100);
+        $(".profile-container").css("opacity", "100%");
+        text.html('Browse your computer for files ...')
+    });
+
+>>>>>>> 7bca656 (Source Code for Jobpit)
     $(".exit-btn-second").on('click', () => 
     {
         cover_letter_prompt_div.hide();

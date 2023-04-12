@@ -36,7 +36,7 @@
           <h1 class="mb-4 brand">SnakePit's JobPit</h1>
           <h1 class="h3 mb-3 fw-normal signup-title">Please sign up</h1>
           <div class="form-floating">
-            <select name="accountType" form="signup-form" class="account-type">
+            <select name="accountType" form="signup-form" class="account-type" required>
               <option class="account-option" value="">Choose your account type</option>
               <option class="account-option" value="student">Student Account</option>
               <option class="account-option" value="employer">Employer Account</option>
@@ -53,6 +53,10 @@
           <div class="form-floating">
             <input type="email" class="form-control" id="floatingInput" name="email" autocomplete="off">
             <label for="floatingInput">Email address</label>
+          </div>
+          <div class="form-floating">
+            <input type="text" class="form-control" id="floatingInput" name="skills" autocomplete="off">
+            <label for="floatingInput">List some of your skills: </label>
           </div>
           <div class="form-floating">
             <input type="password" class="form-control" id="floatingPassword" name="password" autocomplete="off">

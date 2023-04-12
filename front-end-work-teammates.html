@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>My Profile</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0pXv" crossorigin="anonymous">
+      
+    <style>
+      /* CSS for the profile picture */
+      .profile-picture {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+      }
+      /* CSS for the section headings */
+      h2 {
+        color: #333;
+        font-size: 1.5em;
+        margin-top: 20px;
+      }
+      /* CSS for the sections */
+      section {
+        margin-bottom: 40px;
+      }
+      /* CSS for the list of skills */
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      /* CSS for the external links */
+      .external-links a {
+        display: block;
+        margin-bottom: 10px;
+      }
+    </style>
+      
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>My Profile</h1>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <section>
+              <h2>About</h2>
+              <p>Write something about yourself here.</p>
+              <img src="profile-picture.jpg" alt="Profile Picture" class="profile-picture">
+              <form>
+                <div class="form-group">
+                  <label for="photo-upload">Upload Picture:</label>
+                  <input type="file" class="form-control-file" id="photo-upload">
+                </div>
+                <div class="form-group">
+                  <label for="resume-upload">Upload Resume:</label>
+                  <input type="file" class="form-control-file" id="resume-upload">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+            </section>
+          </div>
+          <div class="col-md-8">
+            <section>
+              <h2>Job Experience</h2>
+              <ul>
+                <li>Job Title:<br>
+                        Company Name:<br>
+                        Date: </li><br>
+                <li>Job Title:<br>
+                        Company Name:<br>
+                        Date:</li>
+              </ul>
+            </section>
+            <section>
+              <h2>Education</h2>
+              <ul>
+                <li>Degree:<br>
+                        Institution Name:<br>
+                        Date:</li><br>
+                <li>Degree:<br>
+                        Institution Name:<br>
+                        Date:</li>
+              </ul>
+            </section>
+            <section>
+              <h2>Skills</h2><br>
+              <ul>
+                <li>Skill 1:</li><br>
+                <li>Skill 2:</li><br>
+                <li>Skill 3:</li>
+              </ul>
+            </section>
+            <section>
+              <h2>Projects</h2><br>
+              <ul>
+                <li>Project 1:</li><br>
+                <li>Project 2:</li><br>
+                <li>Project 3:</li>
+              </ul>
+            </section>
+            </div>
+            </div>
+            </div>
+            </main>
+</body>
+</html>

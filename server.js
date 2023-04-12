@@ -1,4 +1,4 @@
-// -- REQUIRING MODULES --
+// ********** =========== BACKEND INITIALIZATION *********** ==========
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -6,6 +6,8 @@ const _ = require("lodash");
 const { find, zip } = require("lodash");
 const multer = require("multer");
 const path = require("path");
+const fs = require('fs');
+const { log } = require("console");
 
 const app = express();
 
@@ -13,6 +15,42 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
+
+
+
+// *** =============================== MULTER ================================= ***
+
+
+const storage = multer.memoryStorage({
+    destination: function(req, file, cb) {
+        const dir = './uploads';
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
+        cb(null, dir); // use the created directory for storage
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now());
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    fileFilter: function(req, file, cb) {
+      // Check the MIME type of the file
+      if (file.mimetype.startsWith('application/pdf')) {
+        cb(null, true);
+      } else {
+        cb(new Error('Only PDF files are allowed'));
+      }
+    }
+});
+
+
+// *** ================================ END OF MULTER ================================== ***
+
+
+
 
 
 // Connecting to MongoDB
@@ -24,7 +62,7 @@ async function main()
 }
 
 
-// VARIABLES
+// *** =========================== VARIABLES ============================= ***
 
 var loggedIn = false;
 var signUpMessageOn = false;
@@ -37,6 +75,7 @@ var userEmail = "";
 var accountType = "";
 var accountID = "";
 var errMessage = "";
+var currentUser = null;
 
 var jobs = [];
 var employerJobs = [];
@@ -50,15 +89,27 @@ var job_id = "";
 var applicant_jobs = [];
 var user_applications = [];
 
-var application_error = false;
+var deletedJob = false;
+var deletedJobId = "";
 
+
+// *** =========================== END OF VARIABLES ============================= ***
+
+
+
+
+// ======================= Sleep Function ========================
 
 function sleep (time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 
-// -- MONGOOSE SCHEMAS --
+
+
+
+
+// ******* ========================================= MONGOOSE SCHEMAS & MODELS ===================================== ********
 
 const userSchema = new mongoose.Schema(
 {
@@ -85,7 +136,12 @@ const userSchema = new mongoose.Schema(
     {
         type: String,
         required: [true, "Please check that the password you entered respects our strong password guidelines."]
-    }
+    },
+    cv: {
+        data: Buffer,
+        contentType: String
+    },
+    skills: String
 });
 
 const User = mongoose.model("User", userSchema);
@@ -117,7 +173,81 @@ const applicationSchema = new mongoose.Schema(
 
 const Application = mongoose.model("Application", applicationSchema);
 
-// -- GET --
+
+// ******* =================================== END OF MONGOOSE SCHEMAS & MODELS =============================== *********
+
+
+
+
+
+
+// ******* ================================ SUGGESTING JOB POSTING TO STUDENT ================================ *******
+
+/* --> Logic: 
+        - Query all job postings for job requirements (required skills)
+        - Query the skills of the logged on user and split every word from their skills into an array of words
+        - Filter through every job posting job requirements and store all jobs that include any of the user's skills
+        - Display below the user's profile a <div> for each job that found a match with the user's skills
+*/
+
+/* Aimee's Code */
+// Function to browse student profiles and suggest a job posting
+
+job_requirements = [];
+
+function suggestJobPosting() 
+{
+    try 
+    {
+        const randomStudentIndex = Math.floor(Math.random() * studentProfiles.length);
+        const randomStudent = studentProfiles[randomStudentIndex];
+
+        // ==> Query the jobs in MongoDB
+        const jobPostings = Job.find({}, (err, jobs) =>
+        {
+            if (err) {console.log(err);}
+
+            jobs.forEach(function(job) 
+            {
+                job_requirements.push(job.requirements);
+            });
+
+            return job_requirements;
+        });
+
+        const user_skills = currentUser.skills;
+        const per_skill_array = user_skills.split(',');
+
+        const matching_skills_and_requirements = job_requirements.filter(function(requirement)
+        {
+            return 
+        });
+
+
+        const matchingJobPostings = jobPostings.filter(job => 
+        {
+            return job.requiredSkills.every(skill => randomStudent.skills.includes(skill));
+        });
+
+        const randomJobPostingIndex = Math.floor(Math.random() * matchingJobPostings.length);
+        const suggestedJobPosting = matchingJobPostings[randomJobPostingIndex];
+
+        // Display the job posting to the student
+        console.log(`Suggested job posting: ${suggestedJobPosting.title}`);
+    } 
+
+    catch (err) 
+    {
+      console.error('Error browsing student profiles:', err);
+      reportToAdministrator('Cannot browse student profiles');
+    }
+}
+
+
+
+
+// ******* ======================================= ==> GET ROUTES <== ===================================== *******
+
 
 app.get("/", function(req, res)
 {
@@ -168,15 +298,20 @@ app.get("/login-success", function(req,res)
 app.get("/profile", function(req, res)
 {
     console.log(accountType);
+    console.log("Current user cv ==> " + currentUser.cv);
+    console.log("User's CV data: " + currentUser.cv.data);
+    console.log("User's CV contentType: " + currentUser.cv.contentType);
     res.render("profile", 
         {
-            isLoggedIn : loggedIn, 
+            isLoggedIn : loggedIn,
             username : userName,
             fullName : userFullName,
             accType : accountType,
             userFirstName : userName, 
             userLastName : userLastName,  
-            userEmail : userEmail
+            userEmail : userEmail,
+            accountID : accountID,
+            user : currentUser
         }
     );
 });
@@ -301,8 +436,11 @@ app.get("/myjobs", async function(req, res)
             isLoggedIn : loggedIn, 
             username : userName,
             employerJobs : employerJobs,
-            accType : accountType
-        })
+            accType : accountType,
+            deletedJob: deletedJob,
+            deletedJobId: deletedJobId
+        });
+        deletedJob = false;
     });
 }); 
 
@@ -335,7 +473,8 @@ app.get("/apply/:jobID", function(req, res)
                     username : userName,
                     accType : accountType,
                     job : jobObject,
-                    studentHasCV : studentHasCV
+                    studentHasCV : studentHasCV,
+                    currentUser : currentUser
                 });  
             }
         })
@@ -442,7 +581,21 @@ app.get("/applicants/:jobID", async function(req, res)
 
 });
 
-// -- POST --
+
+
+// ******* ======================================== END OF GET ROUTES ======================================== *******
+
+
+
+
+
+
+
+
+
+
+// ******* ========================================= ==> POST ROUTES <== ====================================== *******
+
 
 app.post("/signup", function(req, res)
 {
@@ -466,6 +619,7 @@ app.post("/signup", function(req, res)
                     accountType: req.body.accountType,
                     firstName: req.body.fname,
                     lastName: req.body.lname,
+                    skills: req.body.skills,
                     email: req.body.email,
                     password: req.body.password
                 },
@@ -581,6 +735,7 @@ app.post("/login", async function(req, res)
             userFullName = foundUser.firstName + " " + foundUser.lastName;
             userEmail = foundUser.email;
             accountID = foundUser.id;
+            currentUser = foundUser;
     
             loginSuccessMessage = "Welcome back, " + userName + "!";
     
@@ -694,8 +849,110 @@ app.post("/select-candidate/:jobID/:applicantID", function(req, res) {
                 }
             });
         }
-    })
+    });
 });
+
+
+/* ===== Handles Employer Job Deletion ===== */
+app.post("/delete-job/:job_id", function(req, res)
+{
+    console.log("Deleting job " + req.params.job_id);
+
+    Job.findOneAndDelete({_id : req.params.job_id}, (err, deletedObject) => 
+    {
+        if (err) { console.log(err); }
+
+        else // Need to delete all related applications to that job from the database.
+        {
+            console.log("Deleting all applications related to job " + deletedObject._id);
+
+            Application.deleteMany({job_id : deletedObject._id}, (err, deletedApplications) => 
+            {
+                if (err) {console.log(err);}
+                else
+                {
+                    console.log("List of deleted applications related to job " + req.params.job_id);
+                    console.log(deletedApplications);
+                    console.log("----- DELETION SUCCESSFULLY COMPLETED -----");
+                    deletedJob = true;
+                    deletedJobId = req.params.job_id;
+                    res.redirect("/myjobs");
+                }
+            });
+        }
+    });
+});
+
+
+/* ===== CV Upload ===== */
+
+app.post('/upload/:id', upload.single('file'), (req, res) => {
+
+    console.log(req.file);
+
+    try 
+    {
+        User.findById(req.params.id, (err, user) =>
+        {
+            if (err) {  console.log(err);}
+            console.log("File data ==> " + req.file.buffer.toString());
+            currentUser = user;
+            user.cv.data = req.file.buffer;
+            user.cv.contentType = req.file.mimetype;
+            user.save((err) => 
+            {
+                if (err) 
+                {
+                  console.log(err);
+                  res.status(500).send('Internal Server Error');
+                } 
+                else 
+                {
+                    // res.json(
+                    // {
+                    //     userId: user._id,
+                    //     filename: req.file.originalname
+                    // });
+                    sleep(1500).then(function()
+                    {
+                        res.redirect("/profile");
+                    });
+                }
+              });
+        });
+    } 
+    catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+app.get('/view-cv/:id', function(req, res)
+{
+    User.findById(req.params.id, (err, user) => {
+        if (err) 
+        {
+          console.log(err);
+          res.status(500).send('Internal Server Error');
+        } 
+        else 
+        {
+          res.contentType(user.cv.contentType);
+          res.send(user.cv.data);
+        }
+    });
+});
+
+
+
+// ******* ======================================= END OF POST ROUTES ======================================= *******
+
+
+
+
+
+
+/* ===== Listener ===== */
 
 app.listen(3000, function()
 {
