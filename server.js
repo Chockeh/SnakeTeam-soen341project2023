@@ -235,13 +235,11 @@ function suggestedJobPostings()
         });
 
         return matching_jobs;
-
     } 
 
     catch (err) 
     {
-      console.error('Error browsing student profiles:', err);
-      reportToAdministrator('Cannot browse student profiles');
+      console.log(err);
     }
 }
 
