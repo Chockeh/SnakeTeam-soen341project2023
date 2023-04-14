@@ -8,6 +8,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require('fs');
 const { log } = require("console");
+const { match } = require("assert");
 
 const app = express();
 
@@ -193,63 +194,6 @@ const Application = mongoose.model("Application", applicationSchema);
 /* Aimee's Code */
 // Function to browse student profiles and suggest a job posting
 
-const job_requirements = [];
-
-function suggestedJobPostings() 
-{
-    if (currentUser.skills === undefined) { return []; }
-
-    else 
-    {
-        try 
-        {
-            // ==> Query the jobs in MongoDB
-            Job.find({}, (err, jobs) =>
-            {
-                if (err) {console.log(err);}
-    
-                jobs.forEach(function(job) 
-                {
-                    job_requirements.push(job.requirements.toLowerCase());
-    
-                    console.log("JOB REQUIREMENTS --> " + job_requirements);
-                });
-            });
-    
-            console.log("Current User's Skills --> " + currentUser.skills);
-    
-            const user_skills = currentUser.skills.toLowerCase();
-            const per_skill_array = user_skills.split(',');
-    
-            // ==> Querying the requirements to see if the user has any matches between his skills and the job requirements
-            const matching_requirements = job_requirements.filter(requirement => per_skill_array.some(skill => requirement.includes(skill)));
-    
-    
-            const matching_jobs = [];
-    
-            // ==> Query the jobs in MongoDB with the matching jobs for the user
-            matching_requirements.forEach(function(requirement)
-            {
-                Job.find({requirements: requirement}, (err, job) =>
-                {
-                    if (err) {console.log(err);}
-    
-                    matching_jobs.push(job);
-                });
-            });
-    
-            return matching_jobs;
-        } 
-    
-        catch (err) 
-        {
-          console.log(err);
-        }
-    }
-}
-
-
-
 
 // ******* ======================================= ==> GET ROUTES <== ===================================== *******
 
@@ -276,7 +220,7 @@ app.get("/signup", function(req, res)
 
 app.get("/login", function(req, res)
 {
-    res.render("login");
+    res.render("login");``
 });
 
 app.get("/signup-err", function(req, res)
@@ -300,13 +244,44 @@ app.get("/login-success", function(req,res)
     );
 });
 
-app.get("/profile", function(req, res)
+app.get("/profile", async function(req, res)
 {
-    console.log("Current User ID ==> " + currentUser._id);
-    console.log("User Account Type ==> " + accountType);
+    const job_requirements = [];
 
-    const matchingJobs = suggestedJobPostings();
-    console.log(matchingJobs);
+    async function suggestedJobPostings() 
+    {
+        if (currentUser.skills === undefined) { return []; }
+
+        const jobs = await Job.find({});
+        const matchedJobs = [];
+
+        const words = currentUser.skills.split(/[\s,]+/);
+
+        console.log("WORDS -> " + words);
+
+        jobs.forEach(function(job)
+        {
+            console.log("Requirements => " + job.requirements);
+            console.log("Skill ==> " + words);
+
+            if (new RegExp(`\\b(${words.join('|')})\\b`).test(job.requirements))
+            {
+                console.log("MATCH");
+                matchedJobs.push(job);
+                return;
+            }
+            console.log("No Match");
+        });
+
+        // console.log("Matches == " + matchedJobs);
+        return matchedJobs;
+    }
+
+    const matched_jobs = await suggestedJobPostings();
+
+    console.log("Outer Matches ==> " + matched_jobs);
+
+    console.log("Length -> " + matched_jobs.length);
 
     res.render("profile", 
         {
@@ -319,7 +294,7 @@ app.get("/profile", function(req, res)
             userEmail : userEmail,
             accountID : accountID,
             user : currentUser,
-            matchingJobs : matchingJobs
+            matchingJobs : matched_jobs
         }
     );
 });

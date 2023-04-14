@@ -163,10 +163,24 @@
             </div>
         </div>
         <% if (matchingJobs.length > 0) { %>
+            <p class="matching-jobs">Suggested Jobs (Based on your Skills)</p>
             <div class="matching-jobs-container">
                 <% matchingJobs.forEach(function(job) { %>
-                    <div class="matching-job">
-                        <p class="job-title"><%= job.jobTitle %></p>
+                    <div class="floating-job pb-3">
+                        <div class="action-buttons container-fluid">
+                            <% if (accType === "STUDENT Account" || !isLoggedIn) { %>
+                                <form action="/apply/<%= job._id %>" method="GET">
+                                    <button type="submit" class="btn btn-md btn-outline-success apply-btn all-btns">Apply now</button>
+                                </form>
+                            <% } %>
+                            <form action="/student-jobs/<%= job._id.toString() %>" method="GET">
+                                <button class="btn btn-md btn-outline-primary view-btn all-btns">View Posting</button>
+                            </form>
+                        </div>
+                        <div class="job-title-container" style="text-align: left;">
+                            <p class="job-title"><b><%= job.jobTitle %></b></p>
+                        </div>
+                        <p class="company-name mb-0" style="text-align: left;"><%= job.company %></p>
                     </div>
                 <% }) %>
             </div>

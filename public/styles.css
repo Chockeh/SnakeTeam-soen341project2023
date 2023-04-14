@@ -331,9 +331,6 @@ ul.dropdown-menu.user-dropdown.show  {
 
 @media screen and (max-width: 991px) {
     #profile-section {
-        display: flex;
-        justify-content: center;
-        align-items: center;
         text-align: center;
 
         margin-left: auto;
@@ -341,16 +338,12 @@ ul.dropdown-menu.user-dropdown.show  {
         margin-top: 3rem;
 
         width: 80%;
-        height: calc(100% - 84px - 6rem);
 
         background-color: var(--black);
     }    
 }
 @media screen and (min-width: 992px) {
     #profile-section {
-        display: flex;
-        justify-content: center;
-        align-items: center;
         text-align: center;
 
         margin: 3rem auto;
@@ -1105,4 +1098,15 @@ ul.dropdown-menu.user-dropdown.show  {
 .upload-new-cv-div:hover {
   display: flex;
   transition: 1s all ease-in;
+}
+
+.matching-jobs-container {
+    background-color: rebeccapurple;
+    margin-top: 1rem;
+}
+
+.matching-jobs {
+    color: white;
+    margin-top: 2rem;
+    border-bottom: 1px solid white;
 }

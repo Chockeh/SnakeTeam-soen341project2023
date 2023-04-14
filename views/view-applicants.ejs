@@ -125,7 +125,7 @@
                         </div>
                         <div class="candidate-action-btns">
                             <div class="candidate-btn">
-                                    <button id="<%= applicant._id %>-cv-btn" class="btn btn-md btn-primary download-cv-btn all-btns" onclick="viewCv('<%= applicant._id %>')">View CV</button>
+                                <button id="<%= applicant._id %>-cv-btn" class="btn btn-md btn-primary download-cv-btn all-btns" onclick="viewCv('<%= applicant._id %>')">View CV</button>
                             </div>
                             <form action="/select-candidate/<%= job._id %>/<%= applicant._id %>" method="POST">
                                 <div class="candidate-btn">
