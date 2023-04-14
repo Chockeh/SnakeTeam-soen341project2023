@@ -104,7 +104,8 @@
                 <h5 class="account-details-title"><b>Account Details:</b></h5>
                 <p class="details">First name: <%= userFirstName %></p>
                 <p class="details">Last name: <%= userLastName %></p>
-                <p class="details">email: <%= userEmail %></p>
+                <p class="details">E-mail: <%= userEmail %></p>
+                <p class="details">Skills: <%= user.skills %></p>
             </div>
             <div class="profile-forms">
                 <div class="account-specific-buttons">
@@ -120,7 +121,6 @@
 
                     <!-- Student Account Type Profile Options -->
                     <% }else { %>
-
                         <!-- Student did not upload their CV -->
                         <% if (JSON.stringify(user.cv) === '{}') { %>
                             <button id="profile-button" style="margin-right: 0.5rem;" class="btn btn-md btn-primary cv-button">Post your CV</button>
@@ -164,7 +164,7 @@
         </div>
         <% if (matchingJobs.length > 0) { %>
             <p class="matching-jobs">Suggested Jobs (Based on your Skills)</p>
-            <div class="matching-jobs-container">
+            <div class="matching-jobs-container pb-3">
                 <% matchingJobs.forEach(function(job) { %>
                     <div class="floating-job pb-3">
                         <div class="action-buttons container-fluid">

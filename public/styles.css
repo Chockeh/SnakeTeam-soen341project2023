@@ -399,6 +399,8 @@ ul.dropdown-menu.user-dropdown.show  {
 #profile-button {
     border-radius: 0.25rem;
     width: fit-content;
+    position: relative;
+    bottom: 3rem;
 }
 
 .profile-signout-form {
@@ -1062,6 +1064,9 @@ ul.dropdown-menu.user-dropdown.show  {
     text-align: center;
     position: absolute;
     width: 40%;
+    left: 30%;
+    top: 40%;
+    z-index: 1;
 }
 .inner-upload-cv {
     padding: 4rem 2rem 2rem 2rem;
@@ -1101,7 +1106,6 @@ ul.dropdown-menu.user-dropdown.show  {
 }
 
 .matching-jobs-container {
-    background-color: rebeccapurple;
     margin-top: 1rem;
 }
 
