@@ -449,6 +449,7 @@ ul.dropdown-menu.user-dropdown.show  {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-top: 1rem;
 }
 
 
@@ -552,20 +553,9 @@ ul.dropdown-menu.user-dropdown.show  {
     font-size: 0.85rem;
 }
 
-.btn-preview-job {
-    border-radius: 0 0 0 2rem;
-    width: 33.333333%;
-    height: 3rem;
-}
-
-.btn-save-job {
-    border-radius: 0;
-    width: 33.333333%;
-}
-
 .btn-submit-job {
-    border-radius: 0 0 2rem 0;
-    width: 33.333333%;
+    border-radius: 0 0 2rem 2rem;
+    width: 100%;
     height: 3rem;
 }
 

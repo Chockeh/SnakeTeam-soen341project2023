@@ -246,44 +246,45 @@ app.get("/login-success", function(req,res)
 
 app.get("/profile", async function(req, res)
 {
-    const job_requirements = [];
 
-    async function suggestedJobPostings() 
+    var matched_jobs = []
+
+    if (currentUser.accountType === "student")
     {
-        if (currentUser.skills === undefined) { return []; }
+        const job_requirements = [];
 
-        const jobs = await Job.find({});
-        const matchedJobs = [];
-
-        const words = currentUser.skills.split(/[\s,]+/);
-
-        console.log("WORDS -> " + words);
-
-        jobs.forEach(function(job)
+        async function suggestedJobPostings() 
         {
-            console.log("Requirements => " + job.requirements);
-            console.log("Skill ==> " + words);
-
-            if (new RegExp(`\\b(${words.join('|')})\\b`).test(job.requirements))
+            if (currentUser.skills === undefined) { return []; }
+    
+            const jobs = await Job.find({});
+            const matchedJobs = [];
+    
+            const words = currentUser.skills.split(/[\s,]+/);
+    
+            console.log("WORDS -> " + words);
+    
+            jobs.forEach(function(job)
             {
-                console.log("MATCH");
-                matchedJobs.push(job);
-                return;
-            }
-            console.log("No Match");
-        });
+                console.log("Requirements => " + job.requirements);
+                console.log("Skill ==> " + words);
+    
+                if (new RegExp(`\\b(${words.join('|')})\\b`).test(job.requirements))
+                {
+                    console.log("MATCH");
+                    matchedJobs.push(job);
+                    return;
+                }
+                console.log("No Match");
+            });
+    
+            // console.log("Matches == " + matchedJobs);
+            return matchedJobs;
+        }
+    
+        matched_jobs = await suggestedJobPostings();
 
-        // console.log("Matches == " + matchedJobs);
-        return matchedJobs;
-    }
-
-    const matched_jobs = await suggestedJobPostings();
-
-    console.log("Outer Matches ==> " + matched_jobs);
-
-    console.log("Length -> " + matched_jobs.length);
-
-    res.render("profile", 
+        res.render("profile", 
         {
             isLoggedIn : loggedIn,
             username : userName,
@@ -295,8 +296,25 @@ app.get("/profile", async function(req, res)
             accountID : accountID,
             user : currentUser,
             matchingJobs : matched_jobs
-        }
-    );
+        });
+    }
+
+    else
+    {
+        res.render("profile", 
+        {
+            isLoggedIn : loggedIn,
+            username : userName,
+            fullName : userFullName,
+            accType : accountType,
+            userFirstName : userName, 
+            userLastName : userLastName,  
+            userEmail : userEmail,
+            accountID : accountID,
+            user : currentUser,
+            matchingJobs : matched_jobs
+        });
+    }
 });
 
 app.get("/signout", function(req, res)
@@ -510,7 +528,7 @@ app.get("/my-applications", async function(req, res)
 
     await findUserApplications();
 
-    sleep(800).then(() => 
+    sleep(2000).then(() => 
     {
         res.render("my-applications", 
         {
