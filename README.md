@@ -39,3 +39,11 @@ Nour Hassoun (40233077)
 * Bootstrap 5
 * Node.js
 * Express.js
+
+
+## How to run:
+
+* Download the zip file.
+* Change directory to the path of the download on the command line.
+* Install the list of dependencies in the package.json file as well as node.js
+* run: node server.js
