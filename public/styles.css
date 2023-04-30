@@ -172,8 +172,10 @@ ul.dropdown-menu.user-dropdown.show  {
 /* Title Section Styles */
 
 #title-section {
-    height: 90.44452302vh;
+    height: calc(100vh - 84px);
     text-align: center;
+    position: relative;
+    top: 84px;
 }
 
 .title-container {
